@@ -56,7 +56,7 @@ siguiente :: Dir -> Dir
 siguiente Norte   = Este
 siguiente Sur     = Oeste
 siguiente Este    = Sur
-siguiente Oeste   = Norte
+siguiente Oeste   = error "No existe siguiente"
 
 
 {-
@@ -169,7 +169,8 @@ oBien False  b   = b
 -- Definir el tipo de dato Persona, como un nombre y la edad de la persona. Realizar las siguientes funciones:
 data Persona = P String Int
     deriving Show
-
+p1 = P "A" 25
+p2 = P "B" 33
 -- Devuelve el nombre de una persona
 nombre :: Persona -> String
 nombre (P n _) = n
@@ -200,14 +201,28 @@ Definir los tipos de datos Pokemon, como un TipoDePokemon (agua, fuego o planta)
 porcentaje de energía; y Entrenador, como un nombre y dos Pokémon. Luego definir las
 siguientes funciones:
 -}
-data Pokemon = Poke TipoDePokemon Int
+data Pokemon = ConsPokemon TipoDePokemon Int
     deriving Show
 
 data TipoDePokemon = Agua | Fuego | Planta
     deriving Show
 
-data Entrenador = E String Pokemon Pokemon
+data Entrenador = ConsEntrenador String Pokemon Pokemon
     deriving Show
+
+poke_1 = ConsPokemon Agua 1
+poke_2 = ConsPokemon Fuego 2
+poke_3 = ConsPokemon Agua 3
+poke_4 = ConsPokemon Fuego 4
+poke_5 = ConsPokemon Fuego 5
+poke_6 = ConsPokemon Planta 6
+poke_7 = ConsPokemon Planta 7
+entrenador_1 =ConsEntrenador "A" poke_3 poke_1
+entrenador_2 =ConsEntrenador "B" poke_2 poke_4
+entrenador_3 =ConsEntrenador "C" poke_2 poke_3
+entrenador_4 =ConsEntrenador "D" poke_1 poke_6
+entrenador_5 =ConsEntrenador "E" poke_1 poke_3
+
 
 {-
 Dados dos Pokémon indica si el primero, en base al tipo, es superior al segundo. Agua
@@ -217,7 +232,7 @@ superaA :: Pokemon -> Pokemon -> Bool
 superaA p1 p2 = esTipoSuperior (elTipo p1) (elTipo p2)
 
 elTipo :: Pokemon -> TipoDePokemon
-elTipo (Poke t _ ) = t
+elTipo (ConsPokemon t _ ) = t
 
 
 esTipoSuperior :: TipoDePokemon -> TipoDePokemon -> Bool
@@ -230,7 +245,7 @@ esTipoSuperior   _      _    = False
 
 --Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador.
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
-cantidadDePokemonDe t (E _ p1 p2) = unoSiEsMismoTipo t (elTipo p1) + unoSiEsMismoTipo t (elTipo p2)
+cantidadDePokemonDe t (ConsEntrenador _ p1 p2) = unoSiEsMismoTipo t (elTipo p1) + unoSiEsMismoTipo t (elTipo p2)
 
 unoSiEsMismoTipo :: TipoDePokemon -> TipoDePokemon -> Int
 unoSiEsMismoTipo Agua Agua     = 1
@@ -240,7 +255,7 @@ unoSiEsMismoTipo    _     _    = 0
 
 --Dado un par de entrenadores, devuelve a sus Pokémon en una lista.
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
-juntarPokemon (E _ p1 p2, E _ p3 p4) = [p1, p2, p3, p4]
+juntarPokemon (ConsEntrenador _ p1 p2, ConsEntrenador _ p3 p4) = [p1, p2, p3, p4]
 
 
 
@@ -258,6 +273,9 @@ swap :: (a,b) -> (b, a)
 swap (x, y) = (y, x)
 
 
+
+
+
 --PATTERN MATCHING SOBRE LISTAS
 
 {-
@@ -269,7 +287,7 @@ utilizar las funciones que ya vienen con Haskell):
 --Definida en Haskell como null
 estaVacia :: [a] -> Bool
 estaVacia [] = True
-estaVacia xs = False
+estaVacia  _ = False
 
 --Dada una lista devuelve su primer elemento.
 --Definida en Haskell como head.

@@ -65,7 +65,7 @@ unoSiSonIguales x y = if x==y then 1 else 0
 --Dados un número n y una lista xs, devuelve todos los elementos de xs que son menores a n.
 losMenoresA :: Int -> [Int] -> [Int]
 losMenoresA _ []     = []
-losMenoresA n (x:xs) = if n<x then x : losMenoresA n xs else losMenoresA n xs
+losMenoresA n (x:xs) = if n > x then x : losMenoresA n xs else losMenoresA n xs
 
 --Dados un número n y una lista de listas, devuelve la lista de aquellas listas que tienen más
 --de n elementos.
@@ -122,12 +122,12 @@ elMinimo (x:xs) = min x (elMinimo xs)
 factorial :: Int -> Int
 -- n tiene que ser un numero natural o 0
 factorial 0 = 1
-factorial n = n * factorial n-1
+factorial n = n * factorial (n-1)
 
 --Dado un número n devuelve una lista cuyos elementos sean los números comprendidos entre
 --n y 1 (incluidos). Si el número es inferior a 1, devuelve la lista vacía.
 cuentaRegresiva :: Int -> [Int]
-cuentaRegresiva n = if n<0 then [] else n : cuentaRegresiva (n-1)
+cuentaRegresiva n = if n<1 then [] else n : cuentaRegresiva (n-1)
 
 --Dado un número n y un elemento e devuelve una lista en la que el elemento e repite n veces.
 repetir :: Int -> a -> [a]
@@ -169,7 +169,7 @@ mayoresA _ [] = []
 mayoresA n (x:xs) = if esMayorA n x then x : mayoresA n xs else mayoresA n xs
 
 esMayorA :: Int -> Persona -> Bool
-esMayorA n (P _ e) = n > e
+esMayorA n (P _ e) = n < e
 
 --Dada una lista de personas devuelve el promedio de edad entre esas personas. Precondición: la lista al menos posee una persona.
 promedioEdad :: [Persona] -> Int
@@ -200,25 +200,25 @@ esMayor (P _ e1) (P _ e2) = e1>e2
 --Modificaremos la representación de Entreador y Pokemon de la práctica anterior de la siguiente manera:
 data TipoDePokemon = Agua | Fuego | Planta
     deriving Show
-data Pokemon = Poke TipoDePokemon Int
+data Pokemon = ConsPokemon TipoDePokemon Int
     deriving Show
-data Entrenador = E String [Pokemon]
+data Entrenador = ConsEntrenador String [Pokemon]
     deriving Show
 
-poke_1 = Poke Agua 50
-poke_2 = Poke Fuego 48
-poke_3 = Poke Agua 32
-poke_4 = Poke Fuego 32
-poke_5 = Poke Fuego 32
-poke_6 = Poke Planta 32
-poke_7 = Poke Planta 32
-entrenador_1 = E "A" [poke_3, poke_1, poke_6]
-entrenador_2 = E "B" [poke_2, poke_4]
-entrenador_3 = E "C" [poke_2]
-entrenador_4 = E "D" [poke_1, poke_6]
-entrenador_5 = E "E" [poke_1, poke_3]
+poke_1 = ConsPokemon Agua 50
+poke_2 = ConsPokemon Fuego 48
+poke_3 = ConsPokemon Agua 32
+poke_4 = ConsPokemon Fuego 32
+poke_5 = ConsPokemon Fuego 32
+poke_6 = ConsPokemon Planta 32
+poke_7 = ConsPokemon Planta 32
+entrenador_1 = ConsEntrenador "A" [poke_3, poke_1, poke_6]
+entrenador_2 = ConsEntrenador "B" [poke_2, poke_4]
+entrenador_3 = ConsEntrenador "C" [poke_2]
+entrenador_4 = ConsEntrenador "D" [poke_1, poke_6]
+entrenador_5 = ConsEntrenador "E" [poke_1, poke_3]
 
-entr_6 = E "F" [poke_1, poke_2, poke_6]
+entr_6 = ConsEntrenador "F" [poke_1, poke_2, poke_6]
 
 
 --Como puede observarse, ahora los entrenadores tienen una cantidad de Pokemon arbitraria.
@@ -226,12 +226,12 @@ entr_6 = E "F" [poke_1, poke_2, poke_6]
 
 --Devuelve la cantidad de Pokémon que posee el entrenador.
 cantPokemon :: Entrenador -> Int
-cantPokemon (E _ xs) = longitud xs
+cantPokemon (ConsEntrenador _ xs) = longitud xs
 
 
 --Devuelve la cantidad de Pokémon de determinado tipo que posee el entrenador.
 cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
-cantPokemonDe t (E _ xs) = cantPokesDe t xs
+cantPokemonDe t (ConsEntrenador _ xs) = cantPokesDe t xs
 
 
 
@@ -248,7 +248,7 @@ unoSiEsMismoTipo    _     _    = 0
 
 --Dados dos entrenadores, indica la cantidad de Pokemon de cierto tipo, que le ganarían a los Pokemon del segundo entrenador.
 cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
-cuantosDeTipo_De_LeGananATodosLosDe_ t (E _ ps1) (E _ ps2) = cantidadDeTipo_De_SuperanA_ t ps1 ps2
+cuantosDeTipo_De_LeGananATodosLosDe_ t (ConsEntrenador _ ps1) (ConsEntrenador _ ps2) = cantidadDeTipo_De_SuperanA_ t ps1 ps2
 
 cantidadDeTipo_De_SuperanA_ :: TipoDePokemon -> [Pokemon] -> [Pokemon] -> Int
 cantidadDeTipo_De_SuperanA_ t [] _          = 0
@@ -268,14 +268,14 @@ esDeTipo Planta Planta = True
 esDeTipo    _     _    = False
 
 tipoDe:: Pokemon -> TipoDePokemon
-tipoDe (Poke t _) = t
+tipoDe (ConsPokemon t _) = t
 
 unoSileGanaATodos :: Pokemon -> [Pokemon] -> Int
 unoSileGanaATodos _ []     = 1
 unoSileGanaATodos p (x:xs) = unoSi_SuperaA_ p x * unoSileGanaATodos p xs -- si a por lo menos 1 no le gana, ya me da 0 
 
 unoSi_SuperaA_ :: Pokemon -> Pokemon -> Int
-unoSi_SuperaA_ (Poke t1 _) (Poke t2 _) = unoSiEsTipoSuperior t1 t2
+unoSi_SuperaA_ (ConsPokemon t1 _) (ConsPokemon t2 _) = unoSiEsTipoSuperior t1 t2
 
 unoSiEsTipoSuperior :: TipoDePokemon -> TipoDePokemon -> Int
 -- Dados dos tipos de Pokemon, devuelve 1 si el primero es superior al segundo
@@ -292,14 +292,14 @@ cuantosDeTipo_De_LeGananATodosLosDe_ Agua entrenador_1 entrenador_2 --rta--> 2, 
 
 cuantosDeTipo_De_LeGananATodosLosDe_ Agua entrenador_1 entrenador_4 --rta--> 0 ,xq tiene 2 pokes de agua, pero ninguno le puede ganar a los 2 pokes del entrenador 4, xq uno de sus pokes es de planta
 
-entrenador_1 = E "A" [poke_3, poke_1, poke_6]
-entrenador_2 = E "B" [poke_2, poke_4]
-entrenador_4 = E "D" [poke_1, poke_6]
+entrenador_1 =ConsEntrenador "A" [poke_3, poke_1, poke_6]
+entrenador_2 =ConsEntrenador "B" [poke_2, poke_4]
+entrenador_4 =ConsEntrenador "D" [poke_1, poke_6]
 -}
 
 --Dado un entrenador, devuelve True si posee al menos un Pokémon de cada tipo posible.
 esMaestroPokemon :: Entrenador -> Bool
-esMaestroPokemon (E _ ps) = hayDeLosTresTipos ps
+esMaestroPokemon (ConsEntrenador _ ps) = hayDeLosTresTipos ps
 
 hayDeLosTresTipos :: [Pokemon] -> Bool
 --Dada una lista de pokemon, indica si en la misma hay al menos un pokemon de cada tipo.
@@ -311,7 +311,7 @@ hayPokeDe _ []     = False
 hayPokeDe t (p:ps) = oBien (elPokeEsDeTipo t p) (hayPokeDe t ps)
 
 elPokeEsDeTipo :: TipoDePokemon -> Pokemon -> Bool
-elPokeEsDeTipo t1 (Poke t2 _) = esMismoTipo t1 t2
+elPokeEsDeTipo t1 (ConsPokemon t2 _) = esMismoTipo t1 t2
 
 esMismoTipo :: TipoDePokemon -> TipoDePokemon -> Bool
 esMismoTipo Agua Agua     = True
@@ -327,10 +327,10 @@ esMaestroPokemon entrenador_1 --> False
 esMaestroPokemon entrenador_2 --> False
 esMaestroPokemon entrenador_3 --> False
 
-entr_6 = E "F" [poke_1, poke_2, poke_6]
-entrenador_1 = E "A" [poke_3, poke_1, poke_6]
-entrenador_2 = E "B" [poke_2, poke_4]
-entrenador_3 = E "C" [poke_2]
+entr_6 =ConsEntrenador "F" [poke_1, poke_2, poke_6]
+entrenador_1 =ConsEntrenador "A" [poke_3, poke_1, poke_6]
+entrenador_2 =ConsEntrenador "B" [poke_2, poke_4]
+entrenador_3 =ConsEntrenador "C" [poke_2]
 -}
 
 
@@ -353,7 +353,6 @@ data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
 
 data Empresa = ConsEmpresa [Rol]
     deriving Show
-
 
 
 proy1 = ConsProyecto "Proy A"
@@ -403,7 +402,20 @@ sonElMismoProyecto (ConsProyecto s1) (ConsProyecto s2) = s1==s2
 
 --Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen
 --además a los proyectos dados por parámetro.
---losDevSenior :: Empresa -> [Proyecto] -> Int
+losDevSenior :: Empresa -> [Proyecto] -> Int
+losDevSenior (ConsEmpresa rs) ps = losSeniorQueParticipanEn rs ps
+
+losSeniorQueParticipanEn :: [Rol] -> [Proyecto] -> Int
+losSeniorQueParticipanEn   []     _ = 0
+losSeniorQueParticipanEn (r:rs)  ps = unoSiEsSeniorYParticipaEn_ (seniority r) (elProyectoDe_ r) ps + losSeniorQueParticipanEn rs ps
+
+unoSiEsSeniorYParticipaEn_ :: Seniority -> Proyecto -> [Proyecto] -> Int
+--Dado una seniority, un proyecto y una lista de proyectos. Devuelve uno si la seniority es Senior y el proyecto est'a en la lista de proyectos
+unoSiEsSeniorYParticipaEn_ 
+unoSiEsSeniorYParticipaEn_ 
+
+
+
 
 
 --Indica la cantidad de empleados que trabajan en alguno de los proyectos dados.
