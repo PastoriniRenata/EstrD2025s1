@@ -380,7 +380,7 @@ proyectos (ConsEmpresa rs) = proyectosSinRepetidos rs
 
 proyectosSinRepetidos :: [Rol] -> [Proyecto]
 proyectosSinRepetidos []     = []
-proyectosSinRepetidos (r:rs) = if perteneceALaLista (proyectoDe r) (proyectosSinRepetidos rs)
+proyectosSinRepetidos (r:rs) = if proyectoPerteneceALaLista (proyectoDe r) (proyectosSinRepetidos rs)
                                                 then proyectosSinRepetidos rs
                                                 else proyectoDe r : proyectosSinRepetidos rs
 
@@ -392,12 +392,17 @@ elProyecto :: Proyecto -> String
 elProyecto (ConsProyecto proy) = proy
 
 
-perteneceALaLista :: Proyecto -> [Proyecto] -> Bool
-perteneceALaLista _ [] = False
-perteneceALaLista x (s:ss) = oBien (sonElMismoProyecto x s) (perteneceALaLista x ss)
+proyectoPerteneceALaLista :: Proyecto -> [Proyecto] -> Bool
+proyectoPerteneceALaLista _ [] = False
+proyectoPerteneceALaLista x (s:ss) = oBien (sonElMismoProyecto x s) (proyectoPerteneceALaLista x ss)
 
 sonElMismoProyecto :: Proyecto -> Proyecto -> Bool
 sonElMismoProyecto (ConsProyecto s1) (ConsProyecto s2) = s1==s2
+
+
+
+
+
 
 
 --Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen
@@ -407,29 +412,69 @@ losDevSenior (ConsEmpresa rs) ps = losSeniorQueParticipanEn rs ps
 
 losSeniorQueParticipanEn :: [Rol] -> [Proyecto] -> Int
 losSeniorQueParticipanEn   []     _ = 0
-losSeniorQueParticipanEn (r:rs)  ps = unoSiEsSeniorYParticipaEn_ (seniority r) (elProyectoDe_ r) ps + losSeniorQueParticipanEn rs ps
+losSeniorQueParticipanEn (r:rs)  ps = unoSiEsSeniorYSuProyectoEstaEn_ (laSeniority r) (proyectoDe r) ps + losSeniorQueParticipanEn rs ps
 
-unoSiEsSeniorYParticipaEn_ :: Seniority -> Proyecto -> [Proyecto] -> Int
+unoSiEsSeniorYSuProyectoEstaEn_ :: Seniority -> Proyecto -> [Proyecto] -> Int
 --Dado una seniority, un proyecto y una lista de proyectos. Devuelve uno si la seniority es Senior y el proyecto est'a en la lista de proyectos
-unoSiEsSeniorYParticipaEn_ 
-unoSiEsSeniorYParticipaEn_ 
+unoSiEsSeniorYSuProyectoEstaEn_ Senior  p  ps = unoSiElProyectoPertenece p ps
+unoSiEsSeniorYSuProyectoEstaEn_   _     _  _  = 0
+
+unoSiElProyectoPertenece :: Proyecto -> [Proyecto] -> Int
+unoSiElProyectoPertenece  p ps = if proyectoPerteneceALaLista p ps then 1 else 0
+
+laSeniority :: Rol -> Seniority
+laSeniority (Developer s _)  = s
+laSeniority (Management s _) = s
+
+
+
+
 
 
 
 
 
 --Indica la cantidad de empleados que trabajan en alguno de los proyectos dados.
---cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
+cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
+cantQueTrabajanEn ps (ConsEmpresa rs) = cantQueTrabajan ps rs
+
+cantQueTrabajan :: [Proyecto] -> [Rol] -> Int
+cantQueTrabajan _    []     = 0
+cantQueTrabajan ps (r: rs)  = unoSiTrabajaEnAlguno ps r + cantQueTrabajan ps rs
+
+
+unoSiTrabajaEnAlguno :: [Proyecto] -> Rol -> Int
+unoSiTrabajaEnAlguno ps (Developer _ p)  = unoSiElProyectoPertenece p ps
+unoSiTrabajaEnAlguno ps (Management _ p) = unoSiElProyectoPertenece p ps
+
+
 
 
 --Devuelve una lista de pares que representa a los proyectos (sin repetir) junto con su
 --cantidad de personas involucradas.
---asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
+asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
+asignadosPorProyecto (ConsEmpresa rs) = cantPorProyecto rs
+
+cantPorProyecto :: [Rol] -> [(Proyecto, Int)]
+cantPorProyecto []      = []
+cantPorProyecto (r:rs)  = agregarATupla r (cantPorProyecto rs)
+
+agregarATupla :: Rol -> [(Proyecto, Int)] -> [(Proyecto, Int)] 
+agregarATupla (Developer _ p)  ps = sumarUnoEnTuplaCorrespondiente p ps
+agregarATupla (Management _ p) ps = sumarUnoEnTuplaCorrespondiente p ps
 
 
+sumarUnoEnTuplaCorrespondiente :: Proyecto -> [(Proyecto, Int)] -> [(Proyecto, Int)] 
+sumarUnoEnTuplaCorrespondiente p   []   = [(p, 1)] -- si llega a esto es xq la tupla no existe, por lo que tiene que crearla de cero
+sumarUnoEnTuplaCorrespondiente p (t:ts) = if esLaTupla p t 
+                                            then sumarUnoA t : ts 
+                                            else t : sumarUnoEnTuplaCorrespondiente p ts
 
+esLaTupla :: Proyecto -> (Proyecto, Int) -> Bool
+esLaTupla p1 (p2, _) = sonElMismoProyecto p1 p2
 
-
+sumarUnoA :: (Proyecto, Int) -> (Proyecto, Int) 
+sumarUnoA (p , n) = (p, n+1)
 
 
 
