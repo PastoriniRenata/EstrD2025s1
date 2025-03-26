@@ -23,11 +23,8 @@ sucesores (x:xs) =  x+1 : sucesores xs
 --Dada una lista de booleanos devuelve True si todos sus elementos son True.
 conjuncion :: [Bool] -> Bool
 conjuncion []      = True
-conjuncion (x:xs)  = yTambien x (conjuncion xs)
+conjuncion (x:xs)  = x && (conjuncion xs)
 
-yTambien :: Bool-> Bool-> Bool
-yTambien True x = x
-yTambien False _ = False
 
 --Dada una lista de booleanos devuelve True si alguno de sus elementos es True.
 disyuncion :: [Bool] -> Bool
@@ -304,7 +301,7 @@ esMaestroPokemon (ConsEntrenador _ ps) = hayDeLosTresTipos ps
 hayDeLosTresTipos :: [Pokemon] -> Bool
 --Dada una lista de pokemon, indica si en la misma hay al menos un pokemon de cada tipo.
 hayDeLosTresTipos [] = False
-hayDeLosTresTipos ps = yTambien (yTambien (hayPokeDe Agua ps) (hayPokeDe Fuego ps)) (hayPokeDe Planta ps)
+hayDeLosTresTipos ps =  (hayPokeDe Agua ps) && (hayPokeDe Fuego ps) && (hayPokeDe Planta ps)
 
 hayPokeDe :: TipoDePokemon -> [Pokemon] -> Bool
 hayPokeDe _ []     = False
