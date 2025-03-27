@@ -328,9 +328,26 @@ elArbolMasLargo t1 t2 = if heightT t1 < heightT t2 then t2 else t1
 -- OBSERVACIÓN: puede resultar interesante plantear otra función, variación de
 -- ésta para devolver solamente los caminos maximales.
 todosLosCaminos :: Tree a -> [[a]]
+todosLosCaminos EmptyT          = []
+todosLosCaminos (NodeT n t1 t2) = caminoAPartirDe n t1 : caminoAPartirDe n t2 : todosLosCaminos t1 ++ todosLosCaminos t2
 
 
+caminoAPartirDe :: a -> Tree a -> [a]
+caminoAPartirDe EmptyT          = []
+caminoAPartirDe (NodeT n t1 t2) =
 
+
+{-
+
+tree_1 = NodeT 1 (NodeT 2  (NodeT 3 (EmptyT) 
+                                      (NodeT 4 (EmptyT) 
+                                                (NodeT 5 (NodeT 6 (EmptyT) 
+                                                                    (EmptyT)) 
+                                                          (EmptyT)))) 
+                            (EmptyT)) 
+                  (NodeT 7  (EmptyT)
+                            (EmptyT))
+-}
 
 
 {-

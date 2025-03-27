@@ -29,11 +29,7 @@ conjuncion (x:xs)  = x && (conjuncion xs)
 --Dada una lista de booleanos devuelve True si alguno de sus elementos es True.
 disyuncion :: [Bool] -> Bool
 disyuncion []     = False
-disyuncion (x:xs) = oBien x (disyuncion xs)
-
-oBien :: Bool -> Bool -> Bool
-oBien True  _    = True
-oBien False  b   = b
+disyuncion (x:xs) = x || (disyuncion xs)
 
 --Dada una lista de listas, devuelve una única lista con todos sus elementos.
 aplanar :: [[a]] -> [a]
@@ -48,7 +44,7 @@ unirListas (x:xs)  ys = x : unirListas xs ys
 --Dados un elemento e y una lista xs devuelve True si existe un elemento en xs que sea igual a e.
 pertenece :: Eq a => a -> [a] -> Bool
 pertenece _ []     = False
-pertenece e (x:xs) = oBien (e==x) (pertenece e xs)
+pertenece e (x:xs) = e==x || pertenece e xs
 
 --Dados un elemento e y una lista xs cuenta la cantidad de apariciones de e en xs.
 apariciones :: Eq a => a -> [a] -> Int
@@ -174,7 +170,7 @@ promedioEdad :: [Persona] -> Int
 promedioEdad xs = div (sumatoriaEdades xs) (longitud xs)
 
 sumatoriaEdades :: [Persona] -> Int
-sumatoriaEdades []     = 0
+sumatoriaEdades [x]    = edadDe x 
 sumatoriaEdades (x:xs) = edadDe x + sumatoriaEdades xs
 
 edadDe :: Persona -> Int
@@ -305,7 +301,7 @@ hayDeLosTresTipos ps =  (hayPokeDe Agua ps) && (hayPokeDe Fuego ps) && (hayPokeD
 
 hayPokeDe :: TipoDePokemon -> [Pokemon] -> Bool
 hayPokeDe _ []     = False
-hayPokeDe t (p:ps) = oBien (elPokeEsDeTipo t p) (hayPokeDe t ps)
+hayPokeDe t (p:ps) = (elPokeEsDeTipo t p) || (hayPokeDe t ps)
 
 elPokeEsDeTipo :: TipoDePokemon -> Pokemon -> Bool
 elPokeEsDeTipo t1 (ConsPokemon t2 _) = esMismoTipo t1 t2
@@ -377,22 +373,20 @@ proyectos (ConsEmpresa rs) = proyectosSinRepetidos rs
 
 proyectosSinRepetidos :: [Rol] -> [Proyecto]
 proyectosSinRepetidos []     = []
-proyectosSinRepetidos (r:rs) = if proyectoPerteneceALaLista (proyectoDe r) (proyectosSinRepetidos rs)
-                                                then proyectosSinRepetidos rs
-                                                else proyectoDe r : proyectosSinRepetidos rs
+proyectosSinRepetidos (r:rs) = agregarALaListaSiNoEsta (proyectoDe r) (proyectosSinRepetidos rs)
+
+agregarALaListaSiNoEsta :: Proyecto -> [Proyecto] -> [Proyecto]
+agregarALaListaSiNoEsta p ps =  if proyectoPerteneceALaLista p ps
+                                                then ps
+                                                else p : ps
 
 proyectoDe :: Rol -> Proyecto
 proyectoDe (Developer _ p)  = p
 proyectoDe (Management _ p) = p
 
-elProyecto :: Proyecto -> String
-elProyecto (ConsProyecto proy) = proy
-
-
 proyectoPerteneceALaLista :: Proyecto -> [Proyecto] -> Bool
 proyectoPerteneceALaLista _ [] = False
 proyectoPerteneceALaLista x (s:ss) =  (nombreProy x)==(nombreProy s) || (proyectoPerteneceALaLista x ss)
-
 
 nombreProy :: Proyecto -> String
 nombreProy (ConsProyecto s) = s
