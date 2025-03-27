@@ -377,7 +377,7 @@ proyectos (ConsEmpresa rs) = proyectosSinRepetidos rs
 
 proyectosSinRepetidos :: [Rol] -> [Proyecto]
 proyectosSinRepetidos []     = []
-proyectosSinRepetidos (r:rs) = if proyectoPerteneceALaLista (proyectoDe r) (proyectosSinRepetidos rs)
+proyectosSinRepetidos (r:rs) = if proyectoPerteneceALaLista (proyectoDe r) (proyectosSinRepetidos rs) 
                                                 then proyectosSinRepetidos rs
                                                 else proyectoDe r : proyectosSinRepetidos rs
 
@@ -396,6 +396,24 @@ proyectoPerteneceALaLista x (s:ss) =  (nombreProy x)==(nombreProy s) || (proyect
 
 nombreProy :: Proyecto -> String
 nombreProy (ConsProyecto s) = s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
