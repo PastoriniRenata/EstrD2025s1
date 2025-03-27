@@ -182,6 +182,7 @@ tree_3 :: Tree Int
 tree_4 :: Tree String
 tree_5 :: Tree String
 tree_6 :: Tree Int
+tree_7 :: Tree Int
 
 tree_1 = NodeT 1 (NodeT 2  (NodeT 3 (EmptyT) 
                                       (NodeT 4 (EmptyT) 
@@ -197,6 +198,20 @@ tree_3 = NodeT 10 (NodeT 10 (EmptyT) (EmptyT)) (EmptyT)
 tree_4 = NodeT "hola" (NodeT "chau" (EmptyT) (EmptyT)) (EmptyT)
 tree_5 = NodeT "Hola" (NodeT "Mundo" EmptyT EmptyT) (NodeT "Hola" EmptyT EmptyT)
 tree_6 = NodeT 10 (EmptyT)(EmptyT)
+
+tree_7 = NodeT 1 (NodeT 2  (NodeT 3 (EmptyT) 
+                                      (NodeT 4 (EmptyT) 
+                                                (NodeT 5 (NodeT 6 (EmptyT) 
+                                                                    (EmptyT)) 
+                                                          (EmptyT)))) 
+                           (EmptyT)) 
+                  (NodeT 7  (NodeT 8 (EmptyT) 
+                                     (NodeT 9 (EmptyT) 
+                                              (NodeT 10 (NodeT 11 (EmptyT) 
+                                                                  (NodeT 12 (NodeT 13 EmptyT EmptyT)
+                                                                            (EmptyT))) 
+                                                        (EmptyT))))
+                            (EmptyT))
 
 
 
@@ -283,14 +298,21 @@ levelN n (NodeT x t1 t2) = levelN (n-1) t1 ++ levelN (n-1) t2
 --Dado un árbol devuelve una lista de listas en la que cada elemento representa
 --un nivel de dicho árbol.
 listPerLevel :: Tree a -> [[a]]
-listPerLevel tr = 
+listPerLevel tr = listaPorNivel (heightT tr -1) tr  -- el -1 es para que no me ponga una lista vacía por el ultimo nivel q es todo EmptyT
+
+listaPorNivel :: Int -> Tree a -> [[a]]
+listaPorNivel 0 tr  = [levelN 0 tr]
+listaPorNivel n tr = levelN n tr : listaPorNivel (n-1) tr
+    
 
 
-
-{-
 --Devuelve los elementos de la rama más larga del árbol
 ramaMasLarga :: Tree a -> [a]
+ramaMasLarga EmptyT          = []
+ramaMasLarga (NodeT n t1 t2) = n : ramaMasLarga (elArbolMasLargo t1 t2)
 
+elArbolMasLargo :: Tree a -> Tree a -> Tree a
+elArbolMasLargo t1 t2 = if heightT t1 < heightT t2 then t2 else t1
 
 
 
@@ -311,6 +333,7 @@ todosLosCaminos :: Tree a -> [[a]]
 
 
 
+{-
 -- 2.2. Expresiones Aritméticas
 -- El tipo algebraico ExpA modela expresiones aritméticas de la siguiente manera:
 data ExpA = Valor Int

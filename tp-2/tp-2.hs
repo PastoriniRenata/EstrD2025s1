@@ -391,10 +391,11 @@ elProyecto (ConsProyecto proy) = proy
 
 proyectoPerteneceALaLista :: Proyecto -> [Proyecto] -> Bool
 proyectoPerteneceALaLista _ [] = False
-proyectoPerteneceALaLista x (s:ss) = oBien (sonElMismoProyecto x s) (proyectoPerteneceALaLista x ss)
+proyectoPerteneceALaLista x (s:ss) =  (nombreProy x)==(nombreProy s) || (proyectoPerteneceALaLista x ss)
 
-sonElMismoProyecto :: Proyecto -> Proyecto -> Bool
-sonElMismoProyecto (ConsProyecto s1) (ConsProyecto s2) = s1==s2
+
+nombreProy :: Proyecto -> String
+nombreProy (ConsProyecto s) = s
 
 
 
@@ -468,7 +469,7 @@ sumarUnoEnTuplaCorrespondiente p (t:ts) = if esLaTupla p t
                                             else t : sumarUnoEnTuplaCorrespondiente p ts
 
 esLaTupla :: Proyecto -> (Proyecto, Int) -> Bool
-esLaTupla p1 (p2, _) = sonElMismoProyecto p1 p2
+esLaTupla p1 (p2, _) = nombreProy p1  == nombreProy p2
 
 sumarUnoA :: (Proyecto, Int) -> (Proyecto, Int) 
 sumarUnoA (p , n) = (p, n+1)
