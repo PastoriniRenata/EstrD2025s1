@@ -199,6 +199,7 @@ tree_4 = NodeT "hola" (NodeT "chau" (EmptyT) (EmptyT)) (EmptyT)
 tree_5 = NodeT "Hola" (NodeT "Mundo" EmptyT EmptyT) (NodeT "Hola" EmptyT EmptyT)
 tree_6 = NodeT 10 (EmptyT)(EmptyT)
 
+
 tree_7 = NodeT 1 (NodeT 2  (NodeT 3 (EmptyT) 
                                       (NodeT 4 (EmptyT) 
                                                 (NodeT 5 (NodeT 6 (EmptyT) 
@@ -320,22 +321,23 @@ elArbolMasLargo t1 t2 = if heightT t1 < heightT t2 then t2 else t1
 --hasta cualquiera de los nodos.
 --ATENCIÓN: se trata de todos los caminos, y no solamente de los maximales (o
 --sea, de la raíz hasta la hoja), o sea, por ejemplo
---todosLosCaminos (NodeT 1 (NodeT 2 (NodeT 3 EmptyT EmptyT)
---   EmptyT)
---   (NodeT 4 (NodeT 5 EmptyT EmptyT)
---   EmptyT))
+--todosLosCaminos (NodeT 1 (NodeT 2 (NodeT 3 EmptyT 
+--                                           EmptyT)
+--                                   EmptyT)
+--                          (NodeT 4 (NodeT 5 EmptyT 
+--                                            EmptyT)
+--                                    EmptyT))
 --    = [ [1], [1,2], [1,2,3], [1,4], [1,4,5] ]
 -- OBSERVACIÓN: puede resultar interesante plantear otra función, variación de
 -- ésta para devolver solamente los caminos maximales.
 todosLosCaminos :: Tree a -> [[a]]
 todosLosCaminos EmptyT          = []
-todosLosCaminos (NodeT n t1 t2) = caminoAPartirDe n t1 : caminoAPartirDe n t2 : todosLosCaminos t1 ++ todosLosCaminos t2
+todosLosCaminos (NodeT n t1 t2) = caminosDesdeLaRaiz n t1 t2
 
-
-caminoAPartirDe :: a -> Tree a -> [a]
-caminoAPartirDe EmptyT          = []
-caminoAPartirDe (NodeT n t1 t2) =
-
+caminosDesdeLaRaiz :: a -> Tree a -> Tree a
+caminosDesdeLaRaiz n EmptyT t2 = n  caminosPosibles
+caminosDesdeLaRaiz n t1 EmptyT =
+caminosDesdeLaRaiz n t1 t2     =
 
 {-
 
