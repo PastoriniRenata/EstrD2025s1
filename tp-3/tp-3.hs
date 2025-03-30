@@ -328,42 +328,45 @@ elArbolMasLargo t1 t2 = if heightT t1 < heightT t2 then t2 else t1
 --                                            EmptyT)
 --                                    EmptyT))
 --    = [ [1], [1,2], [1,2,3], [1,4], [1,4,5] ]
--- OBSERVACIÓN: puede resultar interesante plantear otra función, variación de
--- ésta para devolver solamente los caminos maximales.
+-- OBSERVACIÓN: puede resultar interesante plantear otra función, variación de ésta para devolver solamente los caminos maximales.
+treePractica :: Tree Int
+treePractica = NodeT 1 (NodeT 2 (NodeT 3 EmptyT EmptyT) EmptyT) (NodeT 4 (NodeT 5 EmptyT EmptyT) EmptyT)
+
 todosLosCaminos :: Tree a -> [[a]]
 todosLosCaminos EmptyT          = []
-todosLosCaminos (NodeT n t1 t2) = caminosDesdeLaRaiz n t1 t2
-
-caminosDesdeLaRaiz :: a -> Tree a -> Tree a
-caminosDesdeLaRaiz n EmptyT t2 = n  caminosPosibles
-caminosDesdeLaRaiz n t1 EmptyT =
-caminosDesdeLaRaiz n t1 t2     =
-
-{-
-
-tree_1 = NodeT 1 (NodeT 2  (NodeT 3 (EmptyT) 
-                                      (NodeT 4 (EmptyT) 
-                                                (NodeT 5 (NodeT 6 (EmptyT) 
-                                                                    (EmptyT)) 
-                                                          (EmptyT)))) 
-                            (EmptyT)) 
-                  (NodeT 7  (EmptyT)
-                            (EmptyT))
--}
+todosLosCaminos (NodeT n t1 t2) = [n] : agregarAlPrincipio n (todosLosCaminos t1) ++ agregarAlPrincipio n (todosLosCaminos t2)
 
 
-{-
+--Dada una lista de listas de elementos de tipo a, agrega al principio de cada lista otro elemento de tipo a
+
+agregarAlPrincipio :: a -> [[a]] -> [[a]]
+agregarAlPrincipio _    []    = []
+agregarAlPrincipio n (xs:xss) = (n:xs) : agregarAlPrincipio n xss
+
+
+
 -- 2.2. Expresiones Aritméticas
 -- El tipo algebraico ExpA modela expresiones aritméticas de la siguiente manera:
 data ExpA = Valor Int
-| Sum ExpA ExpA
-| Prod ExpA ExpA
-| Neg ExpA
+            | Sum ExpA ExpA
+            | Prod ExpA ExpA
+            | Neg ExpA
+    deriving Show
 
 -- Implementar las siguientes funciones utilizando el esquema de recursión estructural sobre Exp:
-eval :: ExpA -> Int
 -- Dada una expresión aritmética devuelve el resultado evaluarla.
-simplificar :: ExpA -> ExpA
+eval :: ExpA -> Int
+eval (Valor n )        = n 
+eval (Sum   exp1 exp2) = eval exp1 + eval exp2
+eval (Prod  exp1 exp2) = eval exp1 * eval exp2
+eval (Neg   exp1)      = - eval exp1
+
+nro1 = Valor 1
+nro2 = Valor 2
+nro3 = Sum nro1 nro2   -- 1 + 2 = 3
+nro4 = Prod nro2 nro3  -- 2 * 3 = 6
+nro5 = Neg nro4        -- = -6 
+
 -- Dada una expresión aritmética, la simplifica según los siguientes criterios (descritos utilizando
 -- notación matemática convencional):
 -- a) 0 + x = x + 0 = x
@@ -371,4 +374,93 @@ simplificar :: ExpA -> ExpA
 -- c) 1 * x = x * 1 = x
 -- d) - (- x) = x
 
--}
+
+nro6  = Neg nro5 -- = 6
+nro7  = Neg nro6 -- = -6
+nro8  = Prod nro4 nro7 -- 6 * -6 = -36
+nro9  = Sum nro8 nro4 -- -36 + 6 = -30
+nro10 = Sum nro9 (Neg nro8) -- -30 + -(-36) = -30 + 36 = 6
+
+
+simplificar :: ExpA -> ExpA
+simplificar (Valor n )        = (Valor n )
+simplificar (Sum   exp1 exp2) = simplificarSuma (simplificar exp1) (simplificar exp2)
+simplificar (Prod  exp1 exp2) = simplificarProd (simplificar exp1) (simplificar exp2)
+simplificar (Neg   exp1)      = simplificarNeg (simplificar exp1) 
+
+
+nro11 = Valor 1                     -- >  1              ---- simplificar --->                                     --rta--> Valor 1                      
+nro12 = Valor 0                     -- >  0              ---- simplificar --->                                     --rta--> Valor 0             
+nro13 = Sum nro11 nro12             -- >  1              ---- simplificar ---> nro11 + nro12 = 1 + 0 = 1 = nro11   --rta--> Valor 1  
+nro14 = Prod nro12 nro13            -- >  0              ---- simplificar ---> Prod nro12 nro13 = 0 * 1            --rta--> Valor 0               
+nro15 = Sum nro13 nro14             -- >  1              ---- simplificar ---> Sum nro13 nro14 = 1 + 0 = nro13     --rta--> Valor 1
+nro16 = Neg (Neg nro15)             -- > -(-1) = 1       ---- simplificar ---> Neg(Neg nro15)                      --rta--> Valor 1
+
+
+nro17 = Valor 2                     -- >  2              ---- simplificar --rta--> Valor 2                      
+nro18 = Valor 3                     -- >  3              ---- simplificar --rta--> Valor 3             
+nro19 = Sum nro17 nro18             -- >  5              ---- simplificar --rta--> Sum (Valor 2) (Valor 3)
+nro20 = Prod nro18 nro19            -- >  15             ---- simplificar --rta--> Prod (Valor 3) (Sum (Valor 2) (Valor 3))         
+nro21 = Sum nro19 nro20             -- >  20             ---- simplificar --rta--> Sum (Sum (Valor 2) (Valor 3)) (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
+nro22 = Neg (Neg nro21)             -- > -(-20) = 20     ---- simplificar --rta--> Sum (Sum (Valor 2) (Valor 3)) (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
+
+
+
+--SUMA
+simplificarSuma :: ExpA -> ExpA -> ExpA
+simplificarSuma exp1 exp2 = if algunoEsCero exp1 exp2 then elQueNoEsCero exp1 exp2 else Sum exp1 exp2
+
+
+algunoEsCero :: ExpA -> ExpA -> Bool
+algunoEsCero exp1 exp2 = esCero (eval exp1) || esCero (eval exp2)
+
+esCero :: Int -> Bool
+esCero n = n==0
+
+
+
+elQueNoEsCero :: ExpA -> ExpA -> ExpA
+elQueNoEsCero exp1 exp2 = if valeCero exp1 then exp2 else exp1
+
+valeCero :: ExpA -> Bool
+valeCero exp = esCero (eval exp)
+
+
+
+
+--PRODUCTO
+simplificarProd :: ExpA -> ExpA -> ExpA
+simplificarProd exp1 exp2 = if algunoEsCero exp1 exp2 then Valor 0 else Prod exp1 exp2
+
+
+--NEGATIVO
+
+simplificarNeg  :: ExpA -> ExpA
+simplificarNeg exp1 = if esNegativo exp1 then sacarNegativo exp1 else exp1  -- si es negativo, saco TODOS los negativos ?? --> le saco el primer negativo que se encuentra
+
+esNegativo :: ExpA -> Bool
+esNegativo exp = eval exp < 0
+
+
+
+sacarNegativo :: ExpA -> ExpA
+--Precondicion: es un nro negativo
+sacarNegativo (Neg exp)         = exp
+sacarNegativo (Sum   exp1 exp2) = if esNegativo exp1 then sacarNegativo exp1 else sacarNegativo exp2
+sacarNegativo (Prod  exp1 exp2) = if esNegativo exp1 then sacarNegativo exp1 else sacarNegativo exp2
+
+-- sacarNegativo (Valor   n)       =  NO VA A EXISTIR ESTE VALOR
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
