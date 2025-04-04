@@ -83,6 +83,17 @@ cantCapasPizza :: Pizza -> (Int, Pizza)
 cantCapasPizza pz = (cantidadDeCapas pz, pz)
 
 
+
+
+
+
+
+
+
+
+
+
+
 --2. Mapa de tesoros (con bifurcaciones)
 --Un mapa de tesoros es un árbol con bifurcaciones que terminan en cofres. Cada bifurcación y
 --cada cofre tiene un objeto, que puede ser chatarra o un tesoro.
@@ -413,13 +424,32 @@ type Tripulante = String
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
 data Nave = N (Tree Sector)
 
+
+nave_1 = N ( NodeT (S "A" [LanzaTorpedos, (Motor 10)] ["Rena", "Gonza"])  (NodeT  (S "B" [LanzaTorpedos, (Motor 20)] ["Azu", "Mile"]) EmptyT 
+                                                                                                                                      EmptyT   ) 
+
+                                                                          (NodeT  (S "C" [ (Motor 30)] ["Pabli", "Ami"]) EmptyT
+                                                                                                                         (NodeT (S "D" [(Motor 40), Almacen [Comida, Oxigeno, Combustible]] ["Mar"]) EmptyT
+                                                                                                                                                                                                     EmptyT )))
+
+
+
+nave_2 = N ( NodeT (S "E" [LanzaTorpedos, (Motor 1)] [ "Gonza"])  (NodeT  (S "F" [LanzaTorpedos, (Motor 2), Almacen [Oxigeno, Combustible] ] ["Azu"]) EmptyT 
+                                                                                                                     EmptyT) 
+
+                                                                  (NodeT  (S "G" [ (Motor 3)] ["Pabli", "Ami"]) EmptyT
+                                                                                                                (NodeT (S "H" [Almacen [Comida, Torpedo, Combustible]] ["Mile"]) EmptyT
+                                                                                                                                                                                 EmptyT )))
+
+
+
 --Implementar las siguientes funciones utilizando recursión estructural:
 
 --Propósito: Devuelve todos los sectores de la nave.
 sectores :: Nave -> [SectorId]
 sectores (N sectores) = losSectores sectores
 
-losSecrtores :: Tree Sector -> [SectorId]
+losSectores :: Tree Sector -> [SectorId]
 losSectores EmptyT = []
 losSectores (NodeT sect s1 s2) = sectorId sect : losSectores s1 ++ losSectores s2
 
@@ -427,21 +457,68 @@ sectorId :: Sector -> SectorId
 sectorId (S id _ _) = id
 
 
+{-
+sectores nave_1 --> ["A", "B", "C", "D"]
+sectores nave_2 --> ["E", "F", "G", "H"]
+-}
 
 
 --Propósito: Devuelve la suma de poder de propulsión de todos los motores de la nave. Nota:
 --el poder de propulsión es el número que acompaña al constructor de motores.
 poderDePropulsion :: Nave -> Int
-poderDePropulsion (N sectores) 
+poderDePropulsion (N sectores) = sumaPropulsion sectores
 
 
+sumaPropulsion :: Tree Sector -> Int
+sumaPropulsion (EmptyT)           = 0
+sumaPropulsion (NodeT sect s1 s2) = propulsionDelSector sect + sumaPropulsion s1 + sumaPropulsion s2
+
+propulsionDelSector :: Sector -> Int
+propulsionDelSector (S _ cs _ ) = totalPropulsionEnLista cs
+
+totalPropulsionEnLista :: [Componente] -> Int
+totalPropulsionEnLista []     = 0
+totalPropulsionEnLista (c:cs) = propulsionSiEsMotor c + totalPropulsionEnLista cs
+
+propulsionSiEsMotor :: Componente -> Int
+propulsionSiEsMotor (Motor prop) = prop
+propulsionSiEsMotor       _      = 0
+
+{-
+poderDePropulsion nave_1  ---> 100
+poderDePropulsion nave_2  ---> 6
+-}
+
+
+
+
+
+--Propósito: Devuelve todos los barriles de la nave.
+barriles :: Nave -> [Barril]
+barriles (N sects) = losBarriles sects
+
+
+losBarriles :: Tree Sector -> [Barril]
+losBarriles EmptyT              = []
+losBarriles (NodeT sect s1 s2)  = barrilesEnSector sect ++ losBarriles s1 ++ losBarriles s2
+
+barrilesEnSector :: Sector -> [Barril]
+barrilesEnSector (S _ cs _) = barrilesEnComponentes cs
+
+barrilesEnComponentes :: [Componente] -> [Barril]
+barrilesEnComponentes []     = [] 
+barrilesEnComponentes (c:cs) = 
 
 
 
 {-
---Propósito: Devuelve todos los barriles de la nave.
-barriles :: Nave -> [Barril]
+barriles nave_1 --> [Comida, Oxigeno, Combustible]
+barriles nave_2 --> [Oxigeno, Combustible, Comida, Torpedo, Combustible]
 
+-}
+
+
+{-
 --Propósito: Añade una lista de componentes a un sector de la nave.
 --Nota: ese sector puede no existir, en cuyo caso no añade componentes.
 agregarASector :: [Componente] -> SectorId -> Nave -> Nave

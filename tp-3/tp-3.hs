@@ -454,66 +454,40 @@ nro15 = Sum nro13 nro14             -- >  1              ---- simplificar ---> S
 nro16 = Neg (Neg nro15)             -- > -(-1) = 1       ---- simplificar ---> Neg(Neg nro15)                      --rta--> Valor 1
 
 
-nro17 = Valor 2                     -- >  2              ---- simplificar --rta--> Valor 2                      
-nro18 = Valor 3                     -- >  3              ---- simplificar --rta--> Valor 3             
-nro19 = Sum nro17 nro18             -- >  5              ---- simplificar --rta--> Sum (Valor 2) (Valor 3)
-nro20 = Prod nro18 nro19            -- >  15             ---- simplificar --rta--> Prod (Valor 3) (Sum (Valor 2) (Valor 3))         
-nro21 = Sum nro19 nro20             -- >  20             ---- simplificar --rta--> Sum (Sum (Valor 2) (Valor 3)) (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
-nro22 = Neg (Neg nro21)             -- > -(-20) = 20     ---- simplificar --rta--> Sum (Sum (Valor 2) (Valor 3)) (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
+nro17 = Valor 2                        -- >  2              ---- simplificar --rta--> Valor 2                      
+nro18 = Valor 3                        -- >  3              ---- simplificar --rta--> Valor 3             
+nro19 = Sum nro17 nro18                -- >  5              ---- simplificar --rta--> Sum (Valor 2) (Valor 3)
+nro20 = Prod nro18 nro19               -- >  15             ---- simplificar --rta--> Prod (Valor 3) (Sum (Valor 2) (Valor 3))         
+nro21 = Sum nro19 nro20                -- >  20             ---- simplificar --rta--> Sum (Sum (Valor 2) (Valor 3)) (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
+nro22 = Neg (Neg nro21)                -- > -(-20) = 20     ---- simplificar --rta--> Sum    (Sum (Valor 2) (Valor 3))     (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
 nro23 = Neg (Neg (Neg (Valor 2)))      -- > - (-(-2)) = -2 ---- simplificar --rta--> Neg (Valor 2)
-nro24 = Neg (Prod (Neg nro18) nro19 )-- >  -(- 15) = 15   ---- simplificar --rta--> Neg (Prod (Neg (Valor 3)) (Sum (Valor 2) (Valor 3))) ???      
-
+nro24 = Neg (Prod (Neg nro18) nro19 )  -- >  -(- 15) = 15   ---- simplificar --rta--> Neg (Prod (Neg (Valor 3)) (Sum (Valor 2) (Valor 3))) ???      
+nro25 = Sum (Sum (Valor 2) (Valor 3))  (Prod (Valor 0) (Sum (Valor 2) (Valor 3))) -- >  = 5      ---- simplificar --rta--> Sum (Valor 2) (Valor 3))
+                                                                    
 
 
 
 simplificar :: ExpA -> ExpA
-simplificar (Valor n )        = (Valor n )
-simplificar (Sum   exp1 exp2) = simplificarSuma (simplificar exp1) (simplificar exp2)
-simplificar (Prod  exp1 exp2) = simplificarProd (simplificar exp1) (simplificar exp2)
-simplificar (Neg   exp)       = if siguienteEsNegativo exp then simplificar (sacarNegativo exp) else Neg (simplificar exp) -- NO TENGO IDEA SI ESTA BIEN
+simplificar (Valor n) = Valor n
+simplificar (Sum exp1 exp2) = simplificarSuma (simplificar exp1) (simplificar exp2)
+simplificar (Prod exp1 exp2) = simplificarProducto (simplificar exp1) (simplificar exp2)
+simplificar (Neg exp) = simplificarNegacion (simplificar exp)
 
---SUMA
 simplificarSuma :: ExpA -> ExpA -> ExpA
-simplificarSuma exp1 exp2 = if algunoEsCero exp1 exp2 then elQueNoEsCero exp1 exp2 else Sum exp1 exp2
+simplificarSuma (Valor 0) exp2 = exp2
+simplificarSuma exp1 (Valor 0) = exp1
+simplificarSuma exp1 exp2 = Sum exp1 exp2
 
-algunoEsCero :: ExpA -> ExpA -> Bool
-algunoEsCero exp1 exp2 = esCero (eval exp1) || esCero (eval exp2)
+simplificarProducto :: ExpA -> ExpA -> ExpA
+simplificarProducto (Valor 0) _ = Valor 0
+simplificarProducto _ (Valor 0) = Valor 0
+simplificarProducto (Valor 1) exp2 = exp2
+simplificarProducto exp1 (Valor 1) = exp1
+simplificarProducto exp1 exp2 = Prod exp1 exp2
 
-esCero :: Int -> Bool
-esCero n = n==0
-
-elQueNoEsCero :: ExpA -> ExpA -> ExpA
-elQueNoEsCero exp1 exp2 = if valeCero exp1 then exp2 else exp1
-
-valeCero :: ExpA -> Bool
-valeCero exp = esCero (eval exp)
-
---PRODUCTO
-simplificarProd :: ExpA -> ExpA -> ExpA
-simplificarProd exp1 exp2 = if algunoEsCero exp1 exp2 then Valor 0 else Prod exp1 exp2
-
---NEGATIVO
-
-
-siguienteEsNegativo :: ExpA -> Bool
-siguienteEsNegativo (Neg _) = True
-siguienteEsNegativo   _     = False
-
-
-simplificarNeg  :: ExpA -> ExpA
-simplificarNeg exp = if esNegativo exp then sacarNegativo exp else exp  -- si es negativo, saco TODOS los negativos ?? --> le saco el primer negativo que se encuentra
-
-esNegativo :: ExpA -> Bool
-esNegativo exp = eval exp < 0
-
-sacarNegativo :: ExpA -> ExpA
---Precondicion: es un nro negativo
-sacarNegativo (Neg exp)         = exp
-sacarNegativo (Sum   exp1 exp2) = if esNegativo exp1 then sacarNegativo exp1 else sacarNegativo exp2
-sacarNegativo (Prod  exp1 exp2) = if esNegativo exp1 then sacarNegativo exp1 else sacarNegativo exp2
-
--- sacarNegativo (Valor   n)       =  NO VA A EXISTIR ESTE VALOR
- 
+simplificarNegacion :: ExpA -> ExpA
+simplificarNegacion (Valor x) = Valor (-x)
+simplificarNegacion (Neg exp) = exp
 
 
 
