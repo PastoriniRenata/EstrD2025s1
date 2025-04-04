@@ -101,9 +101,8 @@ hayTesoroEn n (Nada  camino )     = hayTesoroEn (n-1) camino
 
 
 hayTesoroAca :: Camino -> Bool
-hayTesoroAca Fin                  = False
 hayTesoroAca (Cofre objs camino)  = hayTesoroEnLista objs
-hayTesoroAca (Nada  camino     )  = False
+hayTesoroAca        _  = False
 
 --Indica si hay al menos "n" tesoros en el camino.
 alMenosNTesoros :: Int -> Camino -> Bool
@@ -144,6 +143,9 @@ camino_4 =
           paso 4                (Nada 
 -Hasta -> paso 5                    (Cofre [Cacharro,Cacharro,Cacharro,Tesoro] 
           paso 6                        Fin)))))
+
+
+cantTesorosEntre 3 5 camino_4 --> 3
 
 --> hay 3 cofres
 
@@ -214,7 +216,25 @@ tree_7 = NodeT 1 (NodeT 2  (NodeT 3 (EmptyT)
                                                         (EmptyT))))
                             (EmptyT))
 
-
+arbol_1_prueba = (NodeT 1 (NodeT 2 (NodeT 3 (NodeT 4 (EmptyT)
+                                                     (EmptyT))
+                                            (NodeT 4 (EmptyT)
+                                                     (EmptyT)))
+                                   (NodeT 3 (NodeT 4 (EmptyT)
+                                                     (EmptyT))
+                                            (NodeT 4 (NodeT 5 (EmptyT)
+                                                              (EmptyT))
+                                                     (EmptyT))))
+                          (NodeT 2 (NodeT 3 (NodeT 4 (EmptyT)
+                                                     (EmptyT))
+                                            (NodeT 4 (EmptyT)
+                                                     (EmptyT)))
+                                   (NodeT 3 (NodeT 4 (NodeT 5 (EmptyT)
+                                                              (EmptyT))
+                                                     (EmptyT))
+                                            (NodeT 4 (NodeT 5 (EmptyT)
+                                                              (EmptyT))
+                                                     (EmptyT)))))
 
 --Dado un árbol binario de enteros devuelve la suma entre sus elementos.
 sumarT :: Tree Int -> Int
@@ -257,9 +277,54 @@ unoSiEsMismoElemento x y = if x==y then 1 else 0
 
 --Dado un árbol devuelve los elementos que se encuentran en sus hojas.
 --NOTA: en este tipo se define como hoja a un nodo con dos hijos vacíos.
+{-
 leaves :: Tree a -> [a]
 leaves EmptyT          = []
-leaves (NodeT n t1 t2) = n : leaves t1 ++ leaves t2
+leaves (NodeT n t1 t2) = if esVacio t1 && esVacio t2 then [n]
+                                                     else leaves t1 ++ leaves t2
+-}
+esVacio :: Tree a -> Bool
+esVacio EmptyT = True
+esVacio   _    = False
+
+
+
+
+leaves :: Tree a -> [a]
+leaves EmptyT          = []
+leaves t = case t of
+                (NodeT x EmptyT EmptyT) -> [x]
+                (NodeT x t1 t2)         -> leaves t1 ++ leaves t2
+    
+
+{-
+LEAVES EN CLASE
+
+leaves :: Tree a -> [a]
+leaves EmptyY           = ...
+leaves t  = case t of 
+                NodeT x EmptyT EmptyT -> [x]
+                NodeT x t1 t2         -> leaves t1 ++ leaves t2
+
+
+-}
+
+tree_gonza = NodeT 1 (NodeT 2 (NodeT 4 (EmptyT)
+                                       (NodeT 8 (EmptyT)
+                                                (EmptyT)))
+                              (NodeT 5 (EmptyT)
+                                       (EmptyT))) 
+                     (NodeT 3 (NodeT 6 (NodeT 9 (EmptyT)
+                                                (NodeT 11 (NodeT 12 (NodeT 13 EmptyT 
+                                                                              EmptyT)
+                                                                    (EmptyT))
+                                                          (EmptyT)))
+                                       (EmptyT))
+                              (NodeT 7 (EmptyT)
+                                       (NodeT 10 (EmptyT)
+                                                 (EmptyT))))
+
+
 
 
 
@@ -299,11 +364,11 @@ levelN n (NodeT x t1 t2) = levelN (n-1) t1 ++ levelN (n-1) t2
 --Dado un árbol devuelve una lista de listas en la que cada elemento representa
 --un nivel de dicho árbol.
 listPerLevel :: Tree a -> [[a]]
-listPerLevel tr = listaPorNivel (heightT tr -1) tr  -- el -1 es para que no me ponga una lista vacía por el ultimo nivel q es todo EmptyT
+listPerLevel tr = listaPorNivel 0 (heightT tr -1) tr  -- el -1 es para que no me ponga una lista vacía por el ultimo nivel q es todo EmptyT
 
-listaPorNivel :: Int -> Tree a -> [[a]]
-listaPorNivel 0 tr  = [levelN 0 tr]
-listaPorNivel n tr = levelN n tr : listaPorNivel (n-1) tr
+listaPorNivel :: Int -> Int -> Tree a -> [[a]]
+listaPorNivel n x tr = if n==x then [levelN n tr] 
+                               else levelN n tr : listaPorNivel (n+1) x tr
     
 
 
@@ -381,14 +446,6 @@ nro8  = Prod nro4 nro7 -- 6 * -6 = -36
 nro9  = Sum nro8 nro4 -- -36 + 6 = -30
 nro10 = Sum nro9 (Neg nro8) -- -30 + -(-36) = -30 + 36 = 6
 
-
-simplificar :: ExpA -> ExpA
-simplificar (Valor n )        = (Valor n )
-simplificar (Sum   exp1 exp2) = simplificarSuma (simplificar exp1) (simplificar exp2)
-simplificar (Prod  exp1 exp2) = simplificarProd (simplificar exp1) (simplificar exp2)
-simplificar (Neg   exp1)      = simplificarNeg (simplificar exp1) 
-
-
 nro11 = Valor 1                     -- >  1              ---- simplificar --->                                     --rta--> Valor 1                      
 nro12 = Valor 0                     -- >  0              ---- simplificar --->                                     --rta--> Valor 0             
 nro13 = Sum nro11 nro12             -- >  1              ---- simplificar ---> nro11 + nro12 = 1 + 0 = 1 = nro11   --rta--> Valor 1  
@@ -403,13 +460,21 @@ nro19 = Sum nro17 nro18             -- >  5              ---- simplificar --rta-
 nro20 = Prod nro18 nro19            -- >  15             ---- simplificar --rta--> Prod (Valor 3) (Sum (Valor 2) (Valor 3))         
 nro21 = Sum nro19 nro20             -- >  20             ---- simplificar --rta--> Sum (Sum (Valor 2) (Valor 3)) (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
 nro22 = Neg (Neg nro21)             -- > -(-20) = 20     ---- simplificar --rta--> Sum (Sum (Valor 2) (Valor 3)) (Prod (Valor 3) (Sum (Valor 2) (Valor 3)))
+nro23 = Neg (Neg (Neg (Valor 2)))      -- > - (-(-2)) = -2 ---- simplificar --rta--> Neg (Valor 2)
+nro24 = Neg (Prod (Neg nro18) nro19 )-- >  -(- 15) = 15   ---- simplificar --rta--> Neg (Prod (Neg (Valor 3)) (Sum (Valor 2) (Valor 3))) ???      
 
 
+
+
+simplificar :: ExpA -> ExpA
+simplificar (Valor n )        = (Valor n )
+simplificar (Sum   exp1 exp2) = simplificarSuma (simplificar exp1) (simplificar exp2)
+simplificar (Prod  exp1 exp2) = simplificarProd (simplificar exp1) (simplificar exp2)
+simplificar (Neg   exp)       = if siguienteEsNegativo exp then simplificar (sacarNegativo exp) else Neg (simplificar exp) -- NO TENGO IDEA SI ESTA BIEN
 
 --SUMA
 simplificarSuma :: ExpA -> ExpA -> ExpA
 simplificarSuma exp1 exp2 = if algunoEsCero exp1 exp2 then elQueNoEsCero exp1 exp2 else Sum exp1 exp2
-
 
 algunoEsCero :: ExpA -> ExpA -> Bool
 algunoEsCero exp1 exp2 = esCero (eval exp1) || esCero (eval exp2)
@@ -417,31 +482,29 @@ algunoEsCero exp1 exp2 = esCero (eval exp1) || esCero (eval exp2)
 esCero :: Int -> Bool
 esCero n = n==0
 
-
-
 elQueNoEsCero :: ExpA -> ExpA -> ExpA
 elQueNoEsCero exp1 exp2 = if valeCero exp1 then exp2 else exp1
 
 valeCero :: ExpA -> Bool
 valeCero exp = esCero (eval exp)
 
-
-
-
 --PRODUCTO
 simplificarProd :: ExpA -> ExpA -> ExpA
 simplificarProd exp1 exp2 = if algunoEsCero exp1 exp2 then Valor 0 else Prod exp1 exp2
 
-
 --NEGATIVO
 
+
+siguienteEsNegativo :: ExpA -> Bool
+siguienteEsNegativo (Neg _) = True
+siguienteEsNegativo   _     = False
+
+
 simplificarNeg  :: ExpA -> ExpA
-simplificarNeg exp1 = if esNegativo exp1 then sacarNegativo exp1 else exp1  -- si es negativo, saco TODOS los negativos ?? --> le saco el primer negativo que se encuentra
+simplificarNeg exp = if esNegativo exp then sacarNegativo exp else exp  -- si es negativo, saco TODOS los negativos ?? --> le saco el primer negativo que se encuentra
 
 esNegativo :: ExpA -> Bool
 esNegativo exp = eval exp < 0
-
-
 
 sacarNegativo :: ExpA -> ExpA
 --Precondicion: es un nro negativo
