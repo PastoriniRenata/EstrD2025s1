@@ -104,6 +104,9 @@ hayTesoroAca :: Camino -> Bool
 hayTesoroAca (Cofre objs camino)  = hayTesoroEnLista objs
 hayTesoroAca        _  = False
 
+
+
+
 --Indica si hay al menos "n" tesoros en el camino.
 alMenosNTesoros :: Int -> Camino -> Bool
 alMenosNTesoros n camino = n <= cantTesorosEnCamino camino
@@ -468,22 +471,22 @@ nro25 = Sum (Sum (Valor 2) (Valor 3))  (Prod (Valor 0) (Sum (Valor 2) (Valor 3))
 
 
 simplificar :: ExpA -> ExpA
-simplificar (Valor n) = Valor n
-simplificar (Sum exp1 exp2) = simplificarSuma (simplificar exp1) (simplificar exp2)
-simplificar (Prod exp1 exp2) = simplificarProducto (simplificar exp1) (simplificar exp2)
-simplificar (Neg exp) = simplificarNegacion (simplificar exp)
+simplificar (Valor n)         = Valor n
+simplificar (Sum exp1 exp2)   = simplificarSuma (simplificar exp1) (simplificar exp2)
+simplificar (Prod exp1 exp2)  = simplificarProducto (simplificar exp1) (simplificar exp2)
+simplificar (Neg exp)         = simplificarNegacion (simplificar exp)
 
 simplificarSuma :: ExpA -> ExpA -> ExpA
 simplificarSuma (Valor 0) exp2 = exp2
 simplificarSuma exp1 (Valor 0) = exp1
-simplificarSuma exp1 exp2 = Sum exp1 exp2
+simplificarSuma exp1 exp2      = Sum exp1 exp2
 
 simplificarProducto :: ExpA -> ExpA -> ExpA
-simplificarProducto (Valor 0) _ = Valor 0
-simplificarProducto _ (Valor 0) = Valor 0
+simplificarProducto (Valor 0) _    = Valor 0
+simplificarProducto _ (Valor 0)    = Valor 0
 simplificarProducto (Valor 1) exp2 = exp2
 simplificarProducto exp1 (Valor 1) = exp1
-simplificarProducto exp1 exp2 = Prod exp1 exp2
+simplificarProducto exp1 exp2      = Prod exp1 exp2
 
 simplificarNegacion :: ExpA -> ExpA
 simplificarNegacion (Valor x) = Valor (-x)
