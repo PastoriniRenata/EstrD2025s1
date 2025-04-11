@@ -363,6 +363,33 @@ levelN _ EmptyT          = []
 levelN 0 (NodeT x t1 t2) = [x]
 levelN n (NodeT x t1 t2) = levelN (n-1) t1 ++ levelN (n-1) t2
 
+{-
+tree_1 = NodeT 1 (NodeT 2  (NodeT 3 (EmptyT) 
+                                    (NodeT 4 (EmptyT) 
+                                              (NodeT 5 (NodeT 6 (EmptyT) 
+                                                                  (EmptyT)) 
+                                                        (EmptyT)))) 
+                            (EmptyT)) 
+                  (NodeT 7  (EmptyT)
+                            (EmptyT))
+
+
+levelN 0 tree_1 --> [1]
+levelN 1 tree_1 --> [2,7]
+levelN 2 tree_1 --> [3]
+levelN 3 tree_1 --> [4]
+levelN 4 tree_1 --> [5]
+levelN 5 tree_1 --> [6]
+levelN 6 tree_1 --> []
+
+
+
+levelN 123 tree_1 --> []
+
+-}
+
+
+
 
 --Dado un árbol devuelve una lista de listas en la que cada elemento representa
 --un nivel de dicho árbol.

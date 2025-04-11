@@ -64,8 +64,10 @@ esSalsa   _    = False
 --Recorre cada ingrediente y si es aceitunas duplica su cantidad
 duplicarAceitunas :: Pizza -> Pizza
 duplicarAceitunas Prepizza         = Prepizza
-duplicarAceitunas (Capa  ing  piz) = Capa (duplicarSiSonAceitunas ing) (duplicarAceitunas piz)
+duplicarAceitunas pizza = Capa (duplicarSiSonAceitunas ing) (duplicarAceitunas piz)
 
+
+pizzaMile = Capa Salsa (Capa Queso (Capa Jamon (Capa (Aceitunas 8) Prepizza)))
 
 duplicarSiSonAceitunas :: Ingrediente -> Ingrediente
 duplicarSiSonAceitunas (Aceitunas n) = Aceitunas (n*2)
@@ -223,10 +225,6 @@ caminoAlTesoro (Fin cofre)               = [] --si está en la raíz, entonces n
 caminoAlTesoro (Bifurcacion cofre m1 m2) = if hayTesoroEnCofreActual cofre then [] 
                                                                            else case siguienteMapaYDireccion m1 m2 of
                                                                                                 (map, direcc) -> direcc : caminoAlTesoro map
-
-
-                                                
-
 hayTesoroEnCofreActual :: Cofre -> Bool
 hayTesoroEnCofreActual (Cofre objs) = hayTesoroAca objs
 
@@ -527,12 +525,28 @@ data Nave = N (Tree Sector)
         deriving Show
 
 
+
+
 nave_1 = N ( NodeT (S "A" [LanzaTorpedos, (Motor 10)] ["Rena", "Gonza"])  (NodeT  (S "B" [LanzaTorpedos, (Motor 20)] ["Azu", "Mile"]) EmptyT 
                                                                                                                                       EmptyT   ) 
 
                                                                           (NodeT  (S "C" [ (Motor 30)] ["Pabli", "Ami"]) EmptyT
                                                                                                                          (NodeT (S "D" [(Motor 40), Almacen [Comida, Oxigeno, Combustible]] ["Mar"]) EmptyT
                                                                                                                                                                                                      EmptyT )))
+
+
+
+{-
+                                                S "A" [LanzaTorpedos, (Motor 10)] ["Rena", "Gonza"])  
+                                                /                                               \
+                                               /                                                 \
+        S "B" [LanzaTorpedos, (Motor 20)] ["Azu", "Mile"])                                      S "C" [ (Motor 30)] ["Pabli", "Ami"]
+                                                                                                                           \
+                                                                                                                            \
+                                                                                                                        S "D" [(Motor 40), Almacen [Comida, Oxigeno, Combustible]] ["Mar"]
+
+-}
+
 
 
 
