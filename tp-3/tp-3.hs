@@ -46,7 +46,7 @@ sacar col1 (Bolita col2 celda ) = if esMismoColor col1 col2 then celda else (Bol
 --Dado un número n, un color c, y una celda, agrega n bolitas de color c a la celda.
 ponerN :: Int -> Color -> Celda -> Celda
 ponerN 0  _  celda      = celda
-ponerN n col CeldaVacia = ponerN (n-1) col (Bolita col CeldaVacia)
+--ponerN n col CeldaVacia = ponerN (n-1) col (Bolita col CeldaVacia)
 ponerN n col celda      = ponerN (n-1) col (Bolita col celda)
 
 
@@ -265,7 +265,7 @@ mapDobleT (NodeT n t1 t2) = NodeT (n*2) (mapDobleT t1) (mapDobleT t2)
 --árbol.
 perteneceT :: Eq a => a -> Tree a -> Bool
 perteneceT _ EmptyT          = False
-perteneceT x (NodeT n t1 t2) = (x==n) || perteneceT n t1 || perteneceT n t2
+perteneceT x (NodeT n t1 t2) = (x==n) || (perteneceT x t1) || (perteneceT x t2)
 
 
 
@@ -352,7 +352,7 @@ mirrorT (NodeT n t1 t2) = NodeT n (mirrorT t2) (mirrorT t1)
 --luego la raiz y luego los elementos del hijo derecho.
 toList :: Tree a -> [a]
 toList EmptyT          = [] 
-toList (NodeT n t1 t2) = n : (toList t1) ++ (toList t2)
+toList (NodeT n t1 t2) = n : ((toList t1) ++ (toList t2))
 
 --Dados un número n y un árbol devuelve una lista con los nodos de nivel n. El
 --nivel de un nodo es la distancia que hay de la raíz hasta él. La distancia de la
