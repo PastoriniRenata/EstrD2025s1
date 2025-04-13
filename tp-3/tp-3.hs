@@ -46,7 +46,7 @@ sacar col1 (Bolita col2 celda ) = if esMismoColor col1 col2 then celda else (Bol
 --Dado un número n, un color c, y una celda, agrega n bolitas de color c a la celda.
 ponerN :: Int -> Color -> Celda -> Celda
 ponerN 0  _  celda      = celda
---ponerN n col CeldaVacia = ponerN (n-1) col (Bolita col CeldaVacia)
+ponerN n col CeldaVacia = ponerN (n-1) col (Bolita col CeldaVacia)
 ponerN n col celda      = ponerN (n-1) col (Bolita col celda)
 
 
@@ -352,7 +352,7 @@ mirrorT (NodeT n t1 t2) = NodeT n (mirrorT t2) (mirrorT t1)
 --luego la raiz y luego los elementos del hijo derecho.
 toList :: Tree a -> [a]
 toList EmptyT          = [] 
-toList (NodeT n t1 t2) = n : ((toList t1) ++ (toList t2))
+toList (NodeT n t1 t2) =  (toList t1) ++ [n] ++ (toList t2)
 
 --Dados un número n y un árbol devuelve una lista con los nodos de nivel n. El
 --nivel de un nodo es la distancia que hay de la raíz hasta él. La distancia de la
@@ -393,13 +393,19 @@ levelN 123 tree_1 --> []
 
 --Dado un árbol devuelve una lista de listas en la que cada elemento representa
 --un nivel de dicho árbol.
+
 listPerLevel :: Tree a -> [[a]]
 listPerLevel tr = listaPorNivel 0 (heightT tr -1) tr  -- el -1 es para que no me ponga una lista vacía por el ultimo nivel q es todo EmptyT
 
 listaPorNivel :: Int -> Int -> Tree a -> [[a]]
-listaPorNivel n x tr = if n==x then [levelN n tr] 
-                               else levelN n tr : listaPorNivel (n+1) x tr
+listaPorNivel n x tr = if n<=x then listaPorNivelAux n x tr  
+                               else []
     
+    
+listaPorNivelAux  :: Int -> Int -> Tree a -> [[a]]
+listaPorNivelAux n x tr = if n==x then [levelN n tr] 
+                               else levelN n tr : listaPorNivelAux (n+1) x tr
+  
 
 
 --Devuelve los elementos de la rama más larga del árbol
@@ -498,10 +504,10 @@ nro25 = Sum (Sum (Valor 2) (Valor 3))  (Prod (Valor 0) (Sum (Valor 2) (Valor 3))
 
 
 simplificar :: ExpA -> ExpA
-simplificar (Valor n)         = Valor n
 simplificar (Sum exp1 exp2)   = simplificarSuma (simplificar exp1) (simplificar exp2)
 simplificar (Prod exp1 exp2)  = simplificarProducto (simplificar exp1) (simplificar exp2)
-simplificar (Neg exp)         = simplificarNegacion (simplificar exp)
+simplificar (Neg exp)         = simplificarNeg (simplificar exp)
+simplificar exp               = exp
 
 simplificarSuma :: ExpA -> ExpA -> ExpA
 simplificarSuma (Valor 0) exp2 = exp2
@@ -515,12 +521,9 @@ simplificarProducto (Valor 1) exp2 = exp2
 simplificarProducto exp1 (Valor 1) = exp1
 simplificarProducto exp1 exp2      = Prod exp1 exp2
 
-simplificarNegacion :: ExpA -> ExpA
-simplificarNegacion (Valor x) = Valor (-x)
-simplificarNegacion (Neg exp) = exp
-
-
-
+simplificarNeg :: ExpA -> ExpA
+simplificarNeg (Neg exp) = exp
+simplificarNeg exp = Neg exp
 
 
 
