@@ -64,7 +64,7 @@ esSalsa   _    = False
 --Recorre cada ingrediente y si es aceitunas duplica su cantidad
 duplicarAceitunas :: Pizza -> Pizza
 duplicarAceitunas Prepizza         = Prepizza
-duplicarAceitunas pizza = Capa (duplicarSiSonAceitunas ing) (duplicarAceitunas piz)
+duplicarAceitunas (Capa ing piz) = Capa (duplicarSiSonAceitunas ing) (duplicarAceitunas piz)
 
 
 pizzaMile = Capa Salsa (Capa Queso (Capa Jamon (Capa (Aceitunas 8) Prepizza)))
@@ -741,7 +741,23 @@ sectoresAsignados "Mile" nave_3 --> ["B", "C"]
 
 -}
 
+{-
 
+data Componente = LanzaTorpedos | Motor Int | Almacen [Barril]
+        deriving Show
+data Barril = Comida | Oxigeno | Torpedo | Combustible
+        deriving Show
+data Sector = S SectorId [Componente] [Tripulante]
+        deriving Show
+
+type SectorId = String
+type Tripulante = String
+
+data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
+        deriving Show
+data Nave = N (Tree Sector)
+        deriving Show
+-}
 
 --Propósito: Devuelve la lista de tripulantes, sin elementos repetidos.
 tripulantes :: Nave -> [Tripulante]
@@ -764,8 +780,8 @@ agregarLosTripulantes (t:ts) tps = if pertenece t tps then agregarLosTripulantes
 
 
 {-
-tripulantes nave_1 --> ["Rena","Gonza","Azu","Mile","Pabli","Ami","Mar"]
-tripulantes nave_3 --> ["Gonza","Azu","Pabli","Mile","Ami","Mar","Rena"]
+tripulantes nave_1 -no tiene repetidos-> ["Rena","Gonza","Azu","Mile","Pabli","Ami","Mar"]
+tripulantes nave_3 -tiene repetidos   -> ["Gonza","Azu","Pabli","Mile","Ami","Mar","Rena"]
 -}
 
 
@@ -858,7 +874,7 @@ manada3 = M (Cazador "A" ["carne","pescado","carne","pescado"] (Explorador "B" [
                                                                                                           (Cazador "K" ["pollo", "carne","carne","pescado"] (Cría "L")
                                                                                                                                                             (Cría "M")
                                                                                                                                                             (Cría "N"))))
-{-                                                            Cazador "A" ["carne","pescado","carne","pescado"]
+{-                                                             Cazador "A" ["carne","pescado","carne","pescado"]
                                                                        /             |                  \
                                                                       /              |                   \
                                         Explorador "B" ["Terr1","Terr2"]           Cría "G"         Cazador "H" ["pescado","carne","pescado"]
@@ -871,7 +887,6 @@ manada3 = M (Cazador "A" ["carne","pescado","carne","pescado"] (Explorador "B" [
                                                            /                  |                    \                                            
                                                           /                   |                     \                                                 
                                                       Cría "O"             Cría "P"              Cría "Q"
-
 
 
 
@@ -1008,12 +1023,6 @@ existeElLobo n1 (Cazador n2  _  l1 l2 l3) = n1 == n2 || existeElLobo n1 l1 || ex
 
 
 
-
-
-
-
-
-
 manadaEj = M (Cazador "DienteFiloso" ["Búfalos", "Antílopes"] (Cría "Hopito")
                  
                                                               (Explorador "Incansable" ["Oeste hasta el río"] (Cría "MechónGris")
@@ -1037,6 +1046,16 @@ cazadoresSuperioresDe "Mandíbulas" manadaEj = ["DienteFiloso", "Garras"]
 cazadoresSuperioresDe "Rabito" manadaEj = ["DienteFiloso"]
 cazadoresSuperioresDe "DienteFiloso" manadaEj = []
 cazadoresSuperioresDe "Peludo" manadaEj = ["DienteFiloso", "Garras", "Mandíbulas", "TrituraHuesos"]
+
+
+
+
+cazadoresSuperioresDe "I" manada3 = ["H", "A"]
+cazadoresSuperioresDe "H" manada3 = ["A"]
+cazadoresSuperioresDe "E" manada3 = ["A"]
+cazadoresSuperioresDe "L" manada3 = ["K","H", "A"]
+
+
 
 
 -}

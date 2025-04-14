@@ -5,12 +5,12 @@ Nota: la restricción Eq aparece en toda la interfaz se utilice o no en todas la
 de esta implementación, pero para mantener una interfaz común entre distintas posibles
 implementaciones estamos obligados a escribir así los tipos.
 -}
-module Set
+module SetSinRepetidos
     (Set, emptyS, addS, belongs, sizeS, removeS, unionS, setToList)
 where
 
 data Set a = S [a] Int
-    deriving Show
+    --deriving Show
  
     {- INV. REP. en S elem n
         * La lista de elementos elem no tiene elementos repetidos
