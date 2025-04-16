@@ -39,11 +39,14 @@ firstQ (Q (x:xs)) = if xs == [] then x
 
 --Dada una cola la devuelve sin su primer elemento.
 dequeue :: Queue a -> Queue a
-dequeue (Q [])     = Q [] -- ??? o devuelvo un error ----> error "No hay elementos en la lista"
-dequeue (Q (l:ls)) = Q ls 
+dequeue (Q []) = error "No hay elementos en la lista"
+dequeue (Q ls) = Q (sinElUltimo ls)
 
 
-
+sinElUltimo :: [a] -> [a]
+sinElUltimo []     = []
+sinElUltimo [x]    = []
+sinElUltimo (x:xs) = x: sinElUltimo xs
 
 
 

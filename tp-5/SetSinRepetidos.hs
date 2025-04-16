@@ -40,9 +40,6 @@ agregarAlSet x (S xs n) = S (x:xs) (n+1)
 -}
 
 
-
-
-
 --Dados un elemento y un conjunto indica si el elemento pertenece al conjunto.
 belongs :: Eq a => a -> Set a -> Bool
 belongs x st = elem x (setToList st)
@@ -50,7 +47,6 @@ belongs x st = elem x (setToList st)
 {-
     --> setToList tiene costo constante --> O(1), ya que unicamenete abre la estructura del set para devolver la lista
     --> elem tiene costo linel --> O(n), donde n es la cantidad de elementos de la lista del set
-
 
     --> belongs tiene costo lineal --> O(n), donde n es la cantidad de elementos del set
 -}
@@ -74,7 +70,7 @@ sacar a (x:xs) = if a==x then xs else x: (sacar a xs)
 {-
     --> sacar tiene costo lineal --> O(n), donde n es la cantidad de elementos de la lista pasada por parametro
 
-    --> removeS tiene costo lineal --> O(n), ya que aberir la estructura y usar un if tiene costo constante y donde
+    --> removeS tiene costo lineal --> O(n), ya que abrir la estructura y usar un if tiene costo constante y donde
                                              n es la cantidad de elementos de la lista del set 
 
 -}
@@ -82,6 +78,9 @@ sacar a (x:xs) = if a==x then xs else x: (sacar a xs)
 --Dados dos conjuntos devuelve un conjunto con todos los elementos de ambos conjuntos.
 unionS :: Eq a => Set a -> Set a -> Set a
 unionS set1 set2 = unirS (setToList set1) set2
+{-
+    --
+-}
 
 unirS ::  Eq a => [a] -> Set a -> Set a
 unirS []     set = set
