@@ -24,7 +24,8 @@ factorial n = n * factorial (n-1)
 {-
  -> * tiene costo O(1)
 
--> costo total  O(n) donde n es el numero ingresado por parametro, osea la cantidad de iteraciones que hace la funcion
+-> costo total  O(n) donde n es el numero ingresado por parametro. Se realiza una operacion constante por 
+    cada iteraciones que hace la funcion
 -}
 
 
@@ -45,7 +46,7 @@ factoriales []     = []
 factoriales (x:xs) = factorial x : factoriales xs
 {-
     -> : tiene costo O(1)
-    -> factorial tiene costo O(n), donde n es el valor numerico q pasas por parametro
+    -> factorial tiene costo O(n), donde n es el valor numerico más grande de la lista ingresada por parametro
     -> factoriales tiene costo O(m * n) donde m es el largo de la lista y n es el costo de usar la funcion factorial en cada iteración
 -}
 

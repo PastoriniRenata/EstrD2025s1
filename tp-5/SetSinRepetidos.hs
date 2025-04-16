@@ -20,40 +20,64 @@ data Set a = S [a] Int
 --Un Set es un tipo abstracto de datos que consta de las siguientes operaciones:
 
 
---Crea un conjunto vacío.
+--Crea un conjunto vacío. --> Costo constante --> O(1)
 emptyS :: Set a
 emptyS = S [] 0
 
 --Dados un elemento y un conjunto, agrega el elemento al conjunto.
 addS :: Eq a => a -> Set a -> Set a
-addS x set = if pertenece x (setToList set) then set
-                                              else agregarAlSet x set
-
-
-pertenece :: Eq a => a -> [a] -> Bool 
-pertenece n []     = False
-pertenece n (x:xs) = n == x || pertenece n xs
+addS x set = if elem x (setToList set) then set
+                                       else agregarAlSet x set
 
 agregarAlSet :: a -> Set a -> Set a
 agregarAlSet x (S xs n) = S (x:xs) (n+1)
 
+{-
+    --> elem tiene costo lineal --> O(n), donde n es la cantidad de elementos del set
+
+    addS tiene costo lineal --> O(n)
+
+-}
+
+
+
+
 
 --Dados un elemento y un conjunto indica si el elemento pertenece al conjunto.
 belongs :: Eq a => a -> Set a -> Bool
-belongs x st = pertenece x (setToList st)
+belongs x st = elem x (setToList st)
+
+{-
+    --> setToList tiene costo constante --> O(1), ya que unicamenete abre la estructura del set para devolver la lista
+    --> elem tiene costo linel --> O(n), donde n es la cantidad de elementos de la lista del set
+
+
+    --> belongs tiene costo lineal --> O(n), donde n es la cantidad de elementos del set
+-}
+
 
 --Devuelve la cantidad de elementos distintos de un conjunto.
-sizeS :: Eq a => Set a -> Int
+sizeS :: Eq a => Set a -> Int -- --> tiene costo constante, ya que solo se abre la estructura --> O(1)
 sizeS (S _ n) = n
+
+
 
 --Borra un elemento del conjunto. 
 removeS :: Eq a => a -> Set a -> Set a
-removeS x (S ls n) = if pertenece x ls then S (sacar x ls) (n-1)
-                                       else S ls n
+removeS x (S ls n) = if elem x ls then S (sacar x ls) (n-1)
+                                  else S ls n
 
 sacar :: Eq a => a -> [a] -> [a]
 sacar a []     = []
 sacar a (x:xs) = if a==x then xs else x: (sacar a xs)
+
+{-
+    --> sacar tiene costo lineal --> O(n), donde n es la cantidad de elementos de la lista pasada por parametro
+
+    --> removeS tiene costo lineal --> O(n), ya que aberir la estructura y usar un if tiene costo constante y donde
+                                             n es la cantidad de elementos de la lista del set 
+
+-}
 
 --Dados dos conjuntos devuelve un conjunto con todos los elementos de ambos conjuntos.
 unionS :: Eq a => Set a -> Set a -> Set a

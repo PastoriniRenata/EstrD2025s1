@@ -16,7 +16,7 @@ data Set a = S [a]
     --deriving Show
  
     {- INV. REP. en S elem
-       ???
+       -- Para el usuario no tiene repetidos (internamente si los puede tener)
     -}
 
 --Un Set es un tipo abstracto de datos que consta de las siguientes operaciones:
@@ -43,14 +43,11 @@ pertenece n (x:xs) = n == x || pertenece n xs
 
 --Devuelve la cantidad de elementos distintos de un conjunto.
 sizeS :: Eq a => Set a -> Int
-sizeS (S xs) = longitudSinRepetidos xs
+sizeS set = longitud (setToList set)
 
-longitudSinRepetidos ::  Eq a => [a] -> Int
-longitudSinRepetidos []     = 0
-longitudSinRepetidos (x:xs) = if pertenece x xs -- osea está repetido   
-                                    then longitudSinRepetidos xs
-                                    else 1 + longitudSinRepetidos xs 
-
+longitud :: [a] -> Int 
+longitud []     = 0
+longitud (x:xs) = 1 + longitud xs
 
 
 --Borra un elemento del conjunto. 
@@ -77,6 +74,9 @@ setToList (S ls) = sinRepetidos ls
 
 
 sinRepetidos :: Eq a => [a] -> [a]
+sinRepetidos [] = []
+sinRepetidos (x:xs) = if elem x xs then    sinRepetidos xs
+                                   else x: sinRepetidos xs
 
 
 
