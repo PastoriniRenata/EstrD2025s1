@@ -77,18 +77,29 @@ sacar a (x:xs) = if a==x then xs else x: (sacar a xs)
 
 --Dados dos conjuntos devuelve un conjunto con todos los elementos de ambos conjuntos.
 unionS :: Eq a => Set a -> Set a -> Set a
-unionS set1 set2 = unirS (setToList set1) set2
+unionS (S xs n1) (S ys n2) = let l = unirSinRepetidos xs ys
+                                in S l (length l)
 {-
-    --
+    --> setToList tiene costo constante, ya que unicamente abre la estructura del set --> O(1)
+    --> unirS tiene costo O(n*m), donde m es la cantidad de elementos del primer set y n la cantidad de elementos del 2do set
+
+    --> unionS tiene costo O(n * m), donde m es la cantidad de elementos del primer set y n la cantidad de elementos del 2do set
+-}
+unirSinRepetidos :: Eq a => [a] -> [a] -> [a]
+unirSinRepetidos []     ys = ys
+unirSinRepetidos (x:xs) ys = if elem x ys then unirSinRepetidos xs ys 
+                                          else x : (unirSinRepetidos xs ys)
+
+{-
+    --> addS tiene costo lineal --> O(n), donde n es la cantidad de elementos del set pasado por parametro
+    --> unirS hace una opercion lineal por los m elementos de la lista que se pasa por parametro --> tiene costo O(n * m)
 -}
 
-unirS ::  Eq a => [a] -> Set a -> Set a
-unirS []     set = set
-unirS (x:xs) set = addS x (unirS xs set)
-
 --Dado un conjunto devuelve una lista con todos los elementos distintos del conjunto.
-setToList :: Eq a => Set a -> [a]
-setToList (S ls _) = ls
+setToList :: Eq a => Set a -> [a] -- -> tiene costo constante --> O(1) ya que unicamente abre la estructura
+setToList (S ls _) = ls 
+
+
 
 
 

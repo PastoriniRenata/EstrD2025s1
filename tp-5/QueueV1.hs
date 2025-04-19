@@ -1,7 +1,7 @@
 
 
 
-module Queue 
+module QueueV1
     (Queue, emptyQ, isEmptyQ, enqueue, firstQ, dequeue)
 where
 
@@ -12,6 +12,10 @@ que los elementos salen en el orden con el que entraron, es decir, el que se agr
 primero en salir (como la cola de un banco). Su interfaz es la siguiente:
 -}
 data Queue a = Q [a]
+    deriving Show
+{-
+    - El pirmer elemento de la queue es el primer elemento ingresado en la lista. 
+-}
 
 
 {-
@@ -33,7 +37,7 @@ enqueue x (Q ls) = Q (ls ++ [x])
 
 --Dada una cola devuelve el primer elemento de la cola. 
 firstQ :: Queue a -> a
-firstQ (Q [])     = error "No hay elementos en la lista"
+firstQ (Q [])     = error "No hay elementos en la Queue"
 firstQ (Q (l:ls)) = l
 
 --Dada una cola la devuelve sin su primer elemento.
