@@ -36,14 +36,12 @@ push x (St xs n) = St (x:xs) (n+1)
 --Dada un pila devuelve el elemento del tope de la pila.
 top :: Stack a -> a
 top (St [] _) = error "La pila está vacía"
-top (St xs _)  = let (y:ys) = xs
-                 in y
+top (St xs _)  = head xs
 
 --Dada una pila devuelve la pila sin el primer elemento.
 pop :: Stack a -> Stack a
 pop (St [] _) = error "La pila está vacía"
-pop (St xs n)  = let (y:ys) = xs
-                     in (St ys (n-1))
+pop (St xs n)  = St (tail xs) (n-1)
 
 --Dada la cantidad de elementos en la pila.
 --Costo: constante.
