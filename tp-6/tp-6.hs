@@ -215,14 +215,14 @@ incrementar (c:cs) map = case lookupM c map of
 
 --Propósito: dado dos maps se agregan las claves y valores del primer map en el segundo. Si
 --una clave del primero existe en el segundo, es reemplazada por la del primero.
---OBS por mi: assoc pisa el valor si la clave ya existe en el mapa
+--OBS: assoc pisa el valor si la clave ya existe en el mapa
 mergeMaps:: Eq k => Map k v -> Map k v -> Map k v
 mergeMaps map1 map2 = unirMapas (keys map1) map1 map2
 
 unirMapas :: Eq k => [k] -> Map k v -> Map k v -> Map k v
 unirMapas   []    _   map2 = map2
-unirMapas (c:cs) map1 map2 = unirMapas cs map1 (assocM c (fromJust (lookupM c map1)) map2)
-                        -- assoocM c (fromJust(lookupM c map1) (unirMapas cs map1 map2))
+unirMapas (c:cs) map1 map2 = unirMapas cs map1 (assocM c (fromJust (lookupM c map1)) map2) -- como lo hice yo
+                 -- forma que les gusta a ellos: assoocM c (fromJust(lookupM c map1) (unirMapas cs map1 map2))
 
 {-
 COSTO con V1 de Map:
