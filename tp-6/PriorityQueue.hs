@@ -21,30 +21,31 @@ data PriorityQueue a = Pq [a]
 OBS: los elementos de tipo a saben de que manera ordenarse. Por ejemplo los nro (1,2,3,4,...), alfabeticamente (a,b,c,d,...), si fuera una cola de hospital, etc.
 -}
 --Propósito: devuelve una priority queue vacía.
-emptyPQ :: PriorityQueue a
+emptyPQ :: PriorityQueue a -- O(1)
 emptyPQ = Pq []
 
 --Propósito: indica si la priority queue está vacía.
-isEmptyPQ :: PriorityQueue a -> Bool
+isEmptyPQ :: PriorityQueue a -> Bool -- O(1)
 isEmptyPQ (Pq xs) = null xs
 
 --Propósito: inserta un elemento en la priority queue.
 insertPQ :: Ord a => a -> PriorityQueue a -> PriorityQueue a
-insertPQ x (Pq xs) = Pq (insertarEn x xs)
+insertPQ x (Pq xs) = Pq (insertarConPrioridad x xs) -- O(n)
 
-insertarEn :: Ord a => a -> [a] -> [a]
-insertarEn x   []   = [x]
-insertarEn x (y:ys) = if x<y then x:y:ys
-                             else y: (insertarEn x ys)
+insertarConPrioridad :: Ord a => a -> [a] -> [a]
+insertarConPrioridad x   []   = [x]
+insertarConPrioridad x (y:ys) = if x<y then x:y:ys
+                             else y: (insertarConPrioridad x ys)
+
 
 --Propósito: devuelve el elemento más prioriotario (el mínimo) de la priority queue.
 --Precondición: parcial en caso de priority queue vacía. --> La priority que no está vacía
-findMinPQ :: Ord a => PriorityQueue a -> a
+findMinPQ :: Ord a => PriorityQueue a -> a -- O(1)
 findMinPQ (Pq xs) = head xs
 
 --Propósito: devuelve una priority queue sin el elemento más prioritario (el mínimo).
 --Precondición: parcial en caso de priority queue vacía.  --> La priority que no está vacía
-deleteMinPQ :: Ord a => PriorityQueue a -> PriorityQueue a
+deleteMinPQ :: Ord a => PriorityQueue a -> PriorityQueue a --O(1)
 deleteMinPQ (Pq xs) = Pq (tail xs)
 
 

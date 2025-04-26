@@ -16,7 +16,7 @@ data Set a = S [a]
     deriving Show
  
     {- INV. REP. en S elem
-       -- Para el usuario no tiene repetidos (internamente si los puede tener)
+       -- True --> no tiene invariante (corroborado con Fidel)
     -}
 
 --Un Set es un tipo abstracto de datos que consta de las siguientes operaciones:
