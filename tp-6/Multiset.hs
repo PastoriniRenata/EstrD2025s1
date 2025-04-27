@@ -87,7 +87,7 @@ interseccionM (c:cs) map1 map2 = if existeClaveEn c map1 && existeClaveEn c map2
 
 
 existeClaveEn :: Ord a => a -> Map a Int -> Bool
---Prop: dada una clave y un mapas, indica si la existe una tupla con esa clave en el mapa dado
+--Prop: dada una clave y un map, indica si existe una tupla con esa clave en el map dado
 existeClaveEn c map = case lookupM c map of
                             Just v  -> True
                             Nothing -> False

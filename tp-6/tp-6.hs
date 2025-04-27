@@ -95,7 +95,7 @@ todasAsociadas   []   map = True
 todasAsociadas (k:ks) map = elem k (keys map) && (todasAsociadas ks map)
 
 {-  
-    - n es la cantidad de elementos del mapa
+    - n es la cantidad de elementos del map
     - k es la cantidad de elementos de la lista ingresada por argumento
     - keys tiene costo O(n)
     - elem tiene costo O(n), ya que recorre la lista de claves del map. Osea que tiene la misma cantidad de elementos del map
@@ -161,30 +161,30 @@ crearTuplas (k:ks) map = let valor = fromJust (lookupM k map) -- puedo usar el f
 agruparEq :: Eq k => [(k, v)] -> Map k [v]
 agruparEq    []    = emptyM
 agruparEq (kv:kvs) = let (c, v) = kv
-                        in agregarAlMapa c v (agruparEq kvs)
+                        in agregarAlMap c v (agruparEq kvs)
 
-agregarAlMapa :: Eq k => k -> v -> Map k [v] -> Map k [v]
-agregarAlMapa x y map = case lookupM x map of
+agregarAlMap :: Eq k => k -> v -> Map k [v] -> Map k [v]
+agregarAlMap x y map = case lookupM x map of
                             Just vs -> assocM x (y:vs) map
                             Nothing -> assocM x [y] map
 
 
 {-
-    agregarAlMapa
+    agregarAlMap
          - n la cantidad de elementos del map
          - lookupM tiene costo O(n)
          - assocM tiene costo O(n)
 
-         --> agregarAlMapa hace dos operaciones lineales --> tiene costo O(n+n) --> O(2n) --> O(n)
+         --> agregarAlMap hace dos operaciones lineales --> tiene costo O(n+n) --> O(2n) --> O(n)
 
 
 
     agruparEq
-         agruparEq hace una operacion lineal (agregarAlMapa) por cada llamado recursivo al recorrer la lista ingresada por parametro.
+         agruparEq hace una operacion lineal (agregarAlMap) por cada llamado recursivo al recorrer la lista ingresada por parametro.
          - m cantidad de elementos de la lista ingresada por parametro
 
         agruparEq tiene costo O(m*n)
-            --> nada te garantiza que la cantidad de elementos que va a terminar teniendo el mapa va a ser la misma cantidad de elementos que tiene la lista de tuplas, xq puede haber claves repetidas.
+            --> nada te garantiza que la cantidad de elementos que va a terminar teniendo el map va a ser la misma cantidad de elementos que tiene la lista de tuplas, xq puede haber claves repetidas.
                     Pero como estoy claculando el costo para el peor caso, y mi peor caso es que n=m
                 --> agruparEq tiene costo O(n*n) --> O(n^2)
 -}
@@ -215,34 +215,34 @@ incrementar (c:cs) map = case lookupM c map of
 
 --Propósito: dado dos maps se agregan las claves y valores del primer map en el segundo. Si
 --una clave del primero existe en el segundo, es reemplazada por la del primero.
---OBS: assoc pisa el valor si la clave ya existe en el mapa
+--OBS: assoc pisa el valor si la clave ya existe en el map
 mergeMaps:: Eq k => Map k v -> Map k v -> Map k v
-mergeMaps map1 map2 = unirMapas (keys map1) map1 map2
+mergeMaps map1 map2 = unirMaps (keys map1) map1 map2
 
-unirMapas :: Eq k => [k] -> Map k v -> Map k v -> Map k v
-unirMapas   []    _   map2 = map2
-unirMapas (c:cs) map1 map2 = unirMapas cs map1 (assocM c (fromJust (lookupM c map1)) map2) -- como lo hice yo
-                 -- forma que les gusta a ellos: assoocM c (fromJust(lookupM c map1) (unirMapas cs map1 map2))
+unirMaps :: Eq k => [k] -> Map k v -> Map k v -> Map k v
+unirMaps   []    _   map2 = map2
+unirMaps (c:cs) map1 map2 = unirMaps cs map1 (assocM c (fromJust (lookupM c map1)) map2) -- como lo hice yo
+                 -- forma que les gusta a ellos: assoocM c (fromJust(lookupM c map1) (unirMaps cs map1 map2))
 
 {-
 COSTO con V1 de Map:
-    - Costo de unirMapas:
+    - Costo de unirMaps:
         - assocM tiene costo O(m), donde m es la cantidad de elementos del map2
         - fromJust tiene costo O(1)
         - lookUpM tiene costo O(n), donde n es la cantidad de elementos del map1
 
 
-        --> unirMapas tiene costo O((n+m) * k), ya que por cada elemento de la lista ingresada por parametro, los k elementos, se 
+        --> unirMaps tiene costo O((n+m) * k), ya que por cada elemento de la lista ingresada por parametro, los k elementos, se 
              hace una operacion de costo (n + m), n al tener que usar lookupM en el map1 y m al usar assocM en el map2
 
 
-        --> usando la VERSION 1 de Map k=n, ya que al no haber elementos repetidos, la cantidad de claves es la misma que a cantidad de elementos del mapa
-                --> unirMapas tiene costo O((n+m) * n) -->  O(n*m + n^2)
+        --> usando la VERSION 1 de Map k=n, ya que al no haber elementos repetidos, la cantidad de claves es la misma que a cantidad de elementos del map
+                --> unirMaps tiene costo O((n+m) * n) -->  O(n*m + n^2)
 
 
     - Costo de mergeMaps:
         - keys tiene costo O(n), donde n es la cantidad de elementos del map1
-        - unirMapas tiene costo O((n+m) * k), donde m es la cantidad de elementos del map2, n es la cantidad de elementos del map1
+        - unirMaps tiene costo O((n+m) * k), donde m es la cantidad de elementos del map2, n es la cantidad de elementos del map1
              y k la cantidad de claves en la lista ingresada por parametro
 
         --> mergeMaps tiene costo O((n+m) * k + k) - asorbo el + k -> O((n+m) * k), donde:
