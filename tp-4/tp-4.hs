@@ -521,6 +521,7 @@ type Tripulante = String
 
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
         deriving Show
+        
 data Nave = N (Tree Sector)
         deriving Show
 
