@@ -81,7 +81,10 @@ intersectionMS ms1 ms2 = let lasClavesMS1 = keys (elMap ms1)
 interseccionM :: Ord a => [a] -> Map a Int -> Map a Int -> Map a Int 
 interseccionM   []   map1 map2 = emptyM
 interseccionM (c:cs) map1 map2 = if existeClaveEn c map1 && existeClaveEn c map2
-                                        then assocM c (fromJust (lookupM c map1) + fromJust (lookupM c map2)) (interseccionM cs map1 map2)
+                                        then let v1 = fromJust (lookupM c map1)
+                                                 v2 = fromJust (lookupM c map2)
+                                                    in 
+                                            assocM c (v1 + v2) (interseccionM cs map1 map2)
                                         --             NO SE SI VA LA SUMA O LA DIFERENCIA
                                         else interseccionM cs map1 map2
 
