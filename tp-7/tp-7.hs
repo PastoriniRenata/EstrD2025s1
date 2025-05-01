@@ -93,13 +93,44 @@ laRamaQueTengoQueVer x y t1 t2 = if x>y then t2
                                         else t1
 
 
-{-
+
+
+
+
+-- ESTA MAL:
+
+{- La posicion en la que tiene q ir ubicado es: ser mas grande q su padre y estar en el medio entre sus dos hijos
+cuando empiezo a comparar (estructura del if), si x es mas grande que el nodo en el q estoy, me voy por la rama derecha
+  si es mas chico, me voy por la izquierda y vuelvo a evaluar
+
+
+  Pasos para la inserción:
+    Comenzar en la raíz: Se comienza el proceso en el nodo raíz del BST.
+    Comparar y moverse:
+    Si x es menor que y, se mueve al subárbol izquierdo.
+    Si x es mayor que y, se mueve al subárbol derecho.
+    Si x es igual a y, no se inserta (la propiedad BST no permite duplicados).
+    Encontrar un nodo hoja: Se sigue moviéndose hasta llegar a un nodo hoja (un nodo sin hijos).
+    Insertar el nuevo nodo: Se crea un nuevo nodo con x y se enlaza como hijo izquierdo o derecho del nodo hoja, según corresponda (menor o mayor). 
+    
+    Ejemplo:
+    Supongamos que queremos insertar el valor 20 en un BST donde la raíz es 10, el subárbol izquierdo tiene 5 y el subárbol derecho 15. 
+    Comenzar en la raíz (10): El 20 es mayor que 10, así que se mueve al subárbol derecho.
+    Moverse en el subárbol derecho (15): El 20 es mayor que 15, se mueve al subárbol derecho.
+    Encontrar un nodo hoja: El subárbol derecho de 15 es vacío (nulo), por lo que se ha encontrado la posición para la inserción.
+    Insertar el nuevo nodo: Se crea un nuevo nodo con el valor 20 y se enlaza como hijo derecho de 15.
+-}
 insertBST :: Ord a => a -> Tree a -> Tree a
 --Propósito: dado un BST inserta un elemento en el árbol.
 --Costo: O(log N)
+insertBST x emptyT = NodeT x emptyT emptyT
+insertBST x (NodeT y t1 t2) = if x<y then NodeT y t1 (... x ... t2)-- se va al izquierdo
+                                     else   if x>y then NodeT y (... x ... t1) t2  -- si es maypr se va al derecho
+                                                    else NodeT x t1 t2   -- sino (osea q está en el medio) lo inserto
 
 
 
+{-
 deleteBST :: Ord a => a -> Tree a -> Tree a
 --Propósito: dado un BST borra un elemento en el árbol.
 --Costo: O(log N)
