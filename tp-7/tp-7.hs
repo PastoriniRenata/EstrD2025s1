@@ -37,7 +37,7 @@ pqALista pq = if isEmptyPQ pq then []
                 recursivo hace una operacion logaritmica (deleteMinPQ) (basicamente xq necesito acceder a TODOS los elementos de la PQ y cuando los borra tiene costo (log n)
             
     heapSort:
-        - tiene un costo de O( n * log n + n * log n), se suman xq se ejecutan secuencialmente y no 
+        - tiene un costo de O( n * log n + n * log n), se suman xq se realizan secuencialmente y no 
             dependen una d la otra para existir 
             O( n * log n + n * log n) --> O( 2 * n * log n) -- el 2 se desestima --> O(n * log n)
         
@@ -579,9 +579,11 @@ agregarSector id (ConsE mapSectrs mapEmpleado) = ConsE ( assocM id emptyS mapSec
 -}
 
 
---Propósito: agrega un empleado a la empresa, que trabajará en dichos sectores y tendrá el
---CUIL dado.
+--Propósito: agrega un empleado a la empresa, que trabajará en dichos sectores y tendrá el CUIL dado.
 --Costo: calcular.
+--Propósito: construye un empleado con dicho CUIL.
+
+--OBS: asumo que el alguno de los sectores de la lista de sectores puede no existir
 agregarEmpleado :: [SectorId] -> CUIL -> Empresa -> Empresa
 agregarEmpleado ids cuil (ConsE mapSectrs mapEmpleado) = let empleado = agregarSectoresAEmpleado ids (consEmpleado cuil)
                                                                in ConsE (agregarASectores ids empleado mapSectrs) (assocM cuil empleado mapEmpleado)
@@ -589,14 +591,14 @@ agregarEmpleado ids cuil (ConsE mapSectrs mapEmpleado) = let empleado = agregarS
 agregarSectoresAEmpleado :: [SectorId] -> Empleado -> Empleado
 --OBS: NO se aclara si el TAD empleado verifica que no haya ids repetidos, pero para no programar a la defensiva, interpreto que SI lo chequea
 agregarSectoresAEmpleado   []     empleado = empleado
-agregarSectoresAEmpleado (id:ids) empleado = agregarSectoresAEmpleado ids (incorporarSector id empleado)
+agregarSectoresAEmpleado (id:ids) empleado = incorporarSector id  (agregarSectoresAEmpleado ids empleado)
 
 agregarASectores :: [SectorId] -> Empleado -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
 --Proposito: dado una lista de sectores, un empleado y un Map de sectores, agrega al empleado en los sectores con los ids en la lista. En caso de que el sector no exista, lo crea
 agregarASectores    []    empleado mapSectrs = mapSectrs
 agregarASectores (id:ids) empleado mapSectrs = case lookupM id mapSectrs of
-                                                Just set -> agregarASectores ids empleado (assocM id (addS empleado set) mapSectrs)
-                                                Nothing  -> agregarASectores ids empleado (assocM id (addS empleado emptyS) mapSectrs)
+                                                Just set -> assocM id (addS empleado set)    (agregarASectores ids empleado mapSectrs)
+                                                Nothing  -> assocM id (addS empleado emptyS) (agregarASectores ids empleado mapSectrs)
 
 
                    
@@ -770,6 +772,29 @@ borrarAEmplDeLosSectores (id:ids) emp mapSectrs = let setSector = removeS emp (f
                                    
                     =====> borrarEmpleado tiene costo ==> O(I * (log E + log S))
 -}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
