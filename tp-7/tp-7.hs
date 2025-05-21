@@ -342,7 +342,7 @@ incrementar (c:cs) map = case lookupM c map of
     - assocM tiene costo O(log K)
 
 
-        ==> como estoy calculando el peor costo, mi funcion "incrementar" hace una operacion con costo O(c * (log K * log K)) --> O(c * log K)
+        ==> como estoy calculando el peor costo, mi funcion "incrementar" hace una operacion con costo O(c * (log K + log K)) --> O(c * log K)
 
 -}
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -724,7 +724,7 @@ borrarEmpleado :: CUIL -> Empresa -> Empresa
 --Precondicion: existe un empleado con dicho cuil en la empresa
 borrarEmpleado cuil (ConsE mapSectrs mapEmpleado) = let empleado = fromJust (lookupM cuil mapEmpleado)
                                                         idsABorrar = sectores empleado
-                                                        in ConsE (borrarAEmplDeLosSectores empleado idsABorrar mapSectrs) (deleteM cuil mapEmpleado)
+                                                        in ConsE (borrarAEmplDeLosSectores idsABorrar empleado mapSectrs) (deleteM cuil mapEmpleado)
 
 
 borrarAEmplDeLosSectores :: [SectorId] -> Empleado -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
@@ -753,8 +753,10 @@ borrarAEmplDeLosSectores (id:ids) emp mapSectrs = let setSector = removeS emp (f
 
 
         ==> tiene costo O( (log E + log S + log S) * I) ya  que por cada llamado recursivo (I llamados recursivos), se hacen operaciones logaritmicasas de costo (log E + log S + log S), donde uno de los 
-            terminos (log S) es absorbido or el otro, obteniendo que 
+            terminos (log S) es absorbido por el otro, obteniendo que 
                                                     ===> borrarAEmplDeLosSectores tiene costo O( (log E + log S) * I)
+                                                    ==> como en el peor caso el empleado puede estar en todos los sectores, I = S
+                                                    ===> borrarAEmplDeLosSectores tiene costo O( (log E + log S) * S)
 
 
     borrarEmpleado:
@@ -763,14 +765,14 @@ borrarAEmplDeLosSectores (id:ids) emp mapSectrs = let setSector = removeS emp (f
         - fromJust tiene costo O(1), se desestima
         - lookupM tiene costo O(log E), ya que trabaja sobre el map que contiene a todos los empleados de la empresa
         - sectores tiene costo O(S)
-        - borrarAEmplDeLosSectores tiene costo O( (log E + log S) * I)
+        - borrarAEmplDeLosSectores tiene costo O( (log E + log S) * S)
         - deleteM tiene costo O(log E), ya que trabaja sobre el map que contiene a todos los empleados de la empresa
 
-        ==> borrarEmpleado tiene costo O(log E +  (log E + log S) * I + log E)
-                                       O(log E + I * log E + I * log S + log E) --> el termino multimplicados por I (I* log E)absorbe a los terminos mas pequeños (log E)
-                                   --> O(I * log E + I * log S) 
+        ==> borrarEmpleado tiene costo O(log E +  (log E + log S) * S + log E)
+                                       O(log E + S * log E + S * log S + log E) --> los termino multiplicados por S ((S * log E) y (S* log S))absorbe a los terminos mas pequeños (log E y log S)
+                                   --> O(S * log E + S * log S) 
                                    
-                    =====> borrarEmpleado tiene costo ==> O(I * (log E + log S))
+                    =====> borrarEmpleado tiene costo ==> O(S * (log E + log S))
 -}
 
 
@@ -778,6 +780,173 @@ borrarAEmplDeLosSectores (id:ids) emp mapSectrs = let setSector = removeS emp (f
 
 
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--Ejercicio 5
+--Como usuario del tipo Empresa implementar las siguientes operaciones, calculando el costo obtenido al implementarlas, y justificando cada uno adecuadamente.
+
+
+comenzarCon :: [SectorId] -> [CUIL] -> Empresa
+--Propósito: construye una empresa con la información de empleados dada. Los sectores no tienen empleados.
+--Costo: calcular.
+comenzarCon sectores cuils = agregarEmpleados cuil (agregarSectores sectores consEmpresa)
+
+agregarSectores :: [SectorId] -> Empresa -> Empresa
+agregarSectores    []    empresa = empresa
+agregarSectores (id:ids) empresa = agregarSector id (agregarSectores ids empresa)
+
+
+agregarEmpleados :: [CUIL] -> Map CUIL Empleado
+agregarEmpleados   []   empresa = empresa
+agregarEmpleados (c:cs) empresa = agregarEmpleado [] (agregarEmpleados cs empresa)
+
+
+
+{-
+    COSTO:
+        agregarEmpleados
+            - C es la cantidad de elementos en la lista de CUILs ingresada por argumento
+            agregarEmpleado tiene costo  O( I (log S +log E) ) --> I = O xq paso una lista vacía siempre???, lo tomo como valor desestimable --> I es absorbido --> O( log S +log E )
+                - E es la cantidad de empleados en la empresa
+                - S es cantidad de sectores en la empresa
+
+            --> agregarEmpleados tiene costo O(C * ( log S +log E ))
+            ==> como mi empresa está inicialmente vacía, mi empresa va a terminar teniendo C empleados, Por lo que C = E
+
+            ==> O(E * ( log S +log E ))
+
+
+
+        agregarSectores
+            - E es la cantidad de empleados en la empresa
+            - S es cantidad de sectores en la empresa
+            - I es la cantidad de SectoresId en la lista ingresada por argumento
+
+            - agregarSector tiene costo O(log S)
+
+            ==> agregarSectores tiene costo O(I* log S), como inicialmente mi empresa esta vacía, entonces mi empresa va a terminar teniendo I empleados en el peor caso
+            ===> como I = E ==> agregarSectores tiene costo O(S * log S)
+
+
+        ==> comenzarCon :
+            - agregarEmpleados tiene costo O(E * ( log S +log E ))
+            - agregarSectores tiene costo O(S * log S)
+
+            ==> comenzarCon tiene costo O( E * ( log S +log E ) + S * log S) , ya que se realizan ambas operaciones de manera independiente, de manera secuencial
+                                        O( E * log S + E * log E + S * log S)
+                                        O( (E+S) * log S + E * log E )
+
+-}
+
+
+
+recorteDePersonal :: Empresa -> Empresa
+--Propósito: dada una empresa elimina a la mitad de sus empleados (sin importar a quiénes).
+--Costo: calcular.
+recorteDePersonal empresa = let cuils = todosLosCUIL empresa
+                                cantCuilsABorrar = lenght cuils / 2
+                                in 
+                            borrarLosprimerosNEmpleados cuils cantCuilsABorrar empresa
+
+
+borrarLosprimerosNEmpleados :: [CUIL] -> Int -> Empresa -> Empresa
+-- Precondicion: el largo de la lista debe ser igual o mayor al n ingresado por argumento
+borrarLosprimerosNEmpleados    _   0 empresa = empresa
+borrarLosprimerosNEmpleados (c:cs) n empresa = borrarEmpleado c (borrarLosprimerosNEmpleados cs (n-1) empresa)
+
+
+{-
+    borrarLosprimerosNEmpleados:
+        - E es la cantidad de empleados en la empresa
+        - S es cantidad de sectores en la empresa
+        - n el numero ingresado por argumento 
+        - borrarEmpleado tiene costo ==> O(S * (log E + log S))
+        
+        ==> borrarLosprimerosNEmpleados tiene costo O(N * (S * (log E + log S))), donde N es la mitad de los empleados de la empresa
+
+
+    recorteDePersonal:
+        - E es la cantidad de empleados en la empresa
+        - S es cantidad de sectores en la empresa
+        - N es la mitad de los emleados de la empresa
+
+        - todosLosCUIL tiene costo O(E)
+        - lenght tiene costo O(E)
+        - borrarLosprimerosNEmpleados tiene costo O(N * (S * (log E + log S)))
+
+        ==> recorteDePersonal tiene costo O( E + E + N * (S * (log E + log S)) )
+                                          O(  2*E  + N * (S * (log E + log S)) )
+                                          O( E + N * (S * (log E + log S)) )
+                                          O( E + N * S * (log E + log S))
+
+-}
+
+
+
+
+
+convertirEnComodin :: CUIL -> Empresa -> Empresa
+--Propósito: dado un CUIL de empleado le asigna todos los sectores de la empresa.
+--Costo: calcular.
+convertirEnComodin cuil empresa = let sectores = todosLosSectores empresa
+                                    in agregarEmpleado sectores cuil empresa
+    
+
+{-
+
+    convertirEnComodin
+        - E es la cantidad de empleados en la empresa
+        - S es cantidad de sectores en la empresa 
+        - todosLosSectores tiene costo O(S)
+        - agregarEmpleado tiene costo  O( I (log S +log E), donde I es la cantidad de sectores en la lista ingresada por argumento. Como en este caso estoyu sando 
+                    la lista de todos los sectores de la empresa --> I = S
+                    ==> agregarEmpleado tiene costo  O( S (log S +log E))
+
+
+
+        ==> convertirEnComodin tiene costo O(S + S (log S +log E)), donde el termino lineal S se absorbe ya que crece mucho más lento que el otro
+            ==> convertirEnComodin tiene costo O(S (log S +log E))  
+
+-}
+
+
+esComodin :: CUIL -> Empresa -> Bool
+--Propósito: dado un CUIL de empleado indica si el empleado está en todos los sectores.
+--Costo: calcular.
+esComodin cuil empresa = let sectores = todosLosSectores empresa
+                             empleado = buscarPorCUIL cuil empresa
+                             sectoresEmpleado = sectores empleado
+                             in todosPertenecen sectores sectoresEmpleado
+
+
+todosPertenecen :: [SectorId] -> [SectorId] -> Bool
+todosPertenecen    []    sectoresEmpleado = False -- xq si no hay sectores quiero que me de false
+todosPertenecen    [id]    sectoresEmpleado =  elem id sectoresEmpleado -- pero no quiero que me de false como caso base
+todosPertenecen (id:ids) sectoresEmpleado = elem id sectoresEmpleado && todosPertenecen ids sectoresEmpleado
+
+{-
+    todosPertenecen
+        - E es la cantidad de empleados en la empresa
+        - S es cantidad de sectores en la empresa 
+        - I es la cantidad de sectores en la segunda lista ingresada por argumento
+        - elem tiene costo O(I), ya que trabaja con la 2da lista.
+
+        ==> todosPertenecen tiene costo O(S * I) , donde mi peor caso sería que la 2da lista de ids contenga a todos los sectores de la lista --> I = S
+            ==> todosPertenecen tiene costo O(S^2)
+
+    esComodin:
+        - E es la cantidad de empleados en la empresa
+        - S es cantidad de sectores en la empresa
+        - todosPertenecen tiene costo O(S^2)
+        - todosLosSectores tiene costo O(S)
+        - buscarPorCUIL tiene costo O(log E)
+        - sectores tiene costo O(S)
+
+        ==> esComodin tiene costo O(S^2 + S + log E + S)
+                                  O(S^2 + 2 * S + log E) --> el termino cuadratico S^2 absorbe el termino lineal 2*S
+                                  O(S^2 + log E)
+
+-}
+                    
 
 
 
@@ -786,15 +955,57 @@ borrarAEmplDeLosSectores (id:ids) emp mapSectrs = let setSector = removeS emp (f
 
 
 
+```haskell
+------------------------------
+--RECOPILAR ELEMENTOS DEL MAP: O(N) --> donde N es la cantidad de claves del map
+------------------------------
+valuesMap :: Map k v  -> [k] ->  [v]
+valuesMap map   []   = []
+valuesMap map (c:cs) = c : valuesMap cs
+------------------------------
+--RECOPILAR ELEMENTOS DE LA PriorityQueue: O(N) --> donde N es la cantidad de elementos de la PQ
+------------------------------
+valuesPQ :: PriorityQueue a -> [a]
+valuesPQ pq = if isEmptyPQ pq
+                then []
+                else findMinPQ pq : valuesPQ (deleteMin pq)
+------------------------------
+--RECOPILAR ELEMENTOS DEL MultiSet: --> donde N es la cantidad de elementos del MS
+------------------------------
+ya existe: multiSetToList que tiene costo O(N)
+------------------------------
+--RECOPILAR ELEMENTOS DEL Set: O(N) --> donde N es la cantidad de elementod del Set
+------------------------------
+ya existe: setToList que tiene costo O(N) 
+------------------------------
+--RECOPILAR ELEMENTOS DEL Stack: O(N) --> donde N es la cantidad de elementod del Stack
+------------------------------
+valuesStack :: Stack a -> [a]
+valuesStack stack = if isEmptyS stack
+                        then []
+                        else top stack : valuesStack (pop stack)
+------------------------------
+--RECOPILAR ELEMENTOS DE LA Queue: O(N) --> donde N es la cantidad de elementod de la Queue
+------------------------------
+valuesQueue :: Queue a -> [a]
+valuesQueue q = if isEmptyQ q then []
+                              else firstQ q : valuesQueue (dequeue q)
+------------------------------
+--RECOPILAR ELEMENTOS DE LA MaxHeap: O(N) 
+------------------------------
+valuesMaxHeap :: MaxHeap a -> [a]
+valuesMaxHeap mh = if isEmptyH mh
+                        then []
+                        else maxH mh : valuesMaxHeap (deleteH mh)
+------------------------------
+--RECOPILAR ELEMENTOS DE LA Heap: O(N) --> donde N es la cantidad de elementod de la Heap
+------------------------------
+valuesHeap :: Heap a -> [a]
+valuesHeap heap = if isEmptyH heap
+                        then []
+                        else minH mh : valuesHeap (deleteH mh)
 
-
-
-
-
-
-
-
-
+```
 
 
 
