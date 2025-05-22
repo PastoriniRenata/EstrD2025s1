@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 #include "Par.h"
+
 /*Aca armo las funciones de la practica!!!*/
 
 
@@ -11,10 +12,6 @@ Ejercicio 3
 Dada la estructura de pares representada como struct en C++, definir las siguientes funciones
 sobre pares. Recordar probar las implementaciones en un procedimiento main.
 */
-struct Par {
-    int x;
-    int y;
-};
 
 
 // Propósito: construye un par

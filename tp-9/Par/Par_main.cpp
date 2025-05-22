@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-#include "Par.h"
+#include "Par.cpp"
 /*ACA VA SOLO EL MAIN*/
 int main (){
     Par p = consPar(2,9);
