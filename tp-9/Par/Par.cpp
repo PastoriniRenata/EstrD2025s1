@@ -28,16 +28,16 @@ Par consPar(int x, int y){
 
 // Propósito: devuelve la primera componente
 int fst(Par p){
-    return 0;
+    return p.x ;
 };
 
 // Propósito: devuelve la segunda componente
 int snd(Par p){
-    return 0;
+    return p.y ;
 };
 // Propósito: devuelve la mayor componente
 int maxDelPar(Par p){
-    return 0;
+    return max(p.x, p.y);
 };
 // Propósito: devuelve un par con las componentes intercambiadas
 Par swap(Par p){
@@ -51,8 +51,8 @@ Par swap(Par p){
 // es la división y la segunda el resto entre ambos números
 Par divisionYResto(int n, int m){
     Par unPar;
-    unPar.x = n;
-    unPar.y = m;
+    unPar.x = n/m;
+    unPar.y = n%m;
     
     return unPar;
 };

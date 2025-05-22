@@ -1,3 +1,4 @@
+
 /*
 Ejercicio 3
 Dada la estructura de pares representada como struct en C++, definir las siguientes funciones
