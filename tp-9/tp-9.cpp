@@ -55,11 +55,7 @@ int ft(int n, int m) {
     */
 }
 
-int main(){
-    cout<< ft(8, 12) << endl;
-    cout<< ft(10, 10);
-    return 0;
-}
+
 
 /*Ejercicio 4
 Dar dos implementaciones para las siguientes funciones, una iterativa y otra recursiva, y utilizando
@@ -83,11 +79,6 @@ void printNRecursiva(int n, string s){
         printNRecursiva(n-1, s);
     }
 };
-
-
-
-
-
 
 
 
