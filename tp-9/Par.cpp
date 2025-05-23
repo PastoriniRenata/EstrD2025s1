@@ -4,9 +4,6 @@ using namespace std;
 
 /*Aca armo las funciones de la practica!!!*/
 
-
-
-
 /*
 Ejercicio 3
 Dada la estructura de pares representada como struct en C++, definir las siguientes funciones
@@ -34,8 +31,29 @@ int snd(Par p){
 };
 // Propósito: devuelve la mayor componente
 int maxDelPar(Par p){
-    return max(p.x, p.y);
+    int n;
+    if(p.x > p.y){
+        n = p.x;
+    }else{
+        n = p.y;
+    }
+
+    return n;
+
+
+    /*
+    OPCION CON TERNARIO: 
+    PREGUNTARLE A LOS PROFES!!!!
+
+    return (p.x > p.y) ? p.x : p.y
+    
+    */
+
 };
+
+
+
+
 // Propósito: devuelve un par con las componentes intercambiadas
 Par swap(Par p){
     Par unPar;

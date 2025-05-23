@@ -17,7 +17,6 @@ void printFromTo(char c1, char c2) {
     cout << endl;
 }
 
-
 //2. 
 int fc(int n) {
     // Proposito: retorna el factorial de n. 
@@ -106,7 +105,6 @@ void desdeCeroHastaNIterativo(int n){
         cout<< x << endl;
         x += 1;
     }
-
 }
 
 
@@ -116,20 +114,59 @@ void desdeCeroHastaNRecursivo(int n){
     if(n>0){
         desdeCeroHastaNRecursivo (n-1);
     }
-    
+
     cout<< n << endl;
 }
 
-/*
-int mult(int n, int m)
+int multIterativo(int n, int m){
 //Propósito: realiza la multiplicación entre dos números (sin utilizar la operación * de C++).
+    int x = m;
+    
+    if(n==0 || m==0){
+        x = 0;
+    }else{
+        while(n>1){
+            x += m;
+            n--;
+        };
+    };
+    return x;
+}
 
 
-void primerosN(int n, string s)
+int multRecursiva(int n, int m){
+//Propósito: realiza la multiplicación entre dos números (sin utilizar la operación * de C++).
+    if(n==0 || m==0){
+        return 0;
+    }else{
+        return m + multRecursiva(n-1, m);
+    }
+}
+
+
+
+void primerosNIterativa(int n, string s){
+//Propósito: imprime los primeros n char del string s, separados por un salto de línea.
+//Precondición: el string tiene al menos n char.
+    for(int i=0 ; i<n; i++){
+        cout << s[i] << endl;
+    }
+}
+
+
+
+void primerosNRecursiva(int n, string s){
 //Propósito: imprime los primeros n char del string s, separados por un salto de línea.
 //Precondición: el string tiene al menos n char.
 
+    if(n>=0){
+        primerosNRecursiva(n-1, s);
+        cout<< s[n-1] << endl;
+    }
 
+}
+
+/*
 bool pertenece(char c, string s)
 Propósito: indica si un char c aparece en el string s.
 
@@ -157,13 +194,23 @@ int main(){
 
     cuentaRegresivaRecursiva(5);
     cout << "." << endl;
-*/
     desdeCeroHastaNIterativo(4);
     cout << "." << endl;
-
+    
     desdeCeroHastaNRecursivo(4);
     cout << "." << endl;
-
+    
+    cout << multIterativo(4, 3) << endl;
+    
+    cout<<""<< endl;
+    cout << multRecursiva(4, 3) << endl;
+    
+    */
+    primerosNIterativa(3, "hola");
+    cout << "" << endl;
+    cout << "" << endl;
+    primerosNRecursiva(3, "hola");
+    
 
     return 0;
 }
