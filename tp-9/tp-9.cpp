@@ -111,12 +111,26 @@ void desdeCeroHastaNIterativo(int n){
 void desdeCeroHastaNRecursivo(int n){
 //Propósito: imprime los números de 0 hasta n, separados por saltos de línea.
 
-    if(n>0){
-        desdeCeroHastaNRecursivo (n-1);
+    if(n>=0){                               //4 --> true
+        desdeCeroHastaNRecursivo (n-1);     
+        cout<< n << endl;       
     }
 
-    cout<< n << endl;
 }
+
+
+/*
+
+
+                                                                            4-1                                                3-1                                                2-1                                                1-1                                                 0-1
+-- desdeCeroHastaNRecursivo(4) -- 4>=0 ->true ---- desdeCeroHastaNRecursivo( 3 ) -- 3>=0 -> true ---> desdeCeroHastaNRecursivo( 2 ) --> 2>=0 -> true --> desdeCeroHastaNRecursivo( 1 ) --- 1>=0 -> true --> desdeCeroHastaNRecursivo( 0 ) ---- 0>=0 -> true -> desdeCeroHastaNRecursivo( -1 ) --- -1>=0 -> false ---|                                                                                                                                                           
+                                               |                                                   |                                                     |                                                   |                                                    |                                                 |
+                                               |                                                   |                                                     |                                                   |                                                    |                                                 |
+            cout<< 4 << endl;            <---  |            cout<< 3 << endl;                 <--- |            cout<< 2 << endl;                   <--- |            cout<< 1 << endl;                 <--- |       cout<< 0 << endl;                        <--- NO HACE NADA XQ NO ENTRA EN EL IF             <--|
+
+
+*/
+
 
 int multIterativo(int n, int m){
 //Propósito: realiza la multiplicación entre dos números (sin utilizar la operación * de C++).
@@ -136,11 +150,8 @@ int multIterativo(int n, int m){
 
 int multRecursiva(int n, int m){
 //Propósito: realiza la multiplicación entre dos números (sin utilizar la operación * de C++).
-    if(n==0 || m==0){
-        return 0;
-    }else{
-        return m + multRecursiva(n-1, m);
-    }
+
+    return (n==0 || m==0) ? 0 : m + multRecursiva(n-1, m);
 }
 
 
@@ -166,18 +177,72 @@ void primerosNRecursiva(int n, string s){
 
 }
 
-/*
-bool pertenece(char c, string s)
-Propósito: indica si un char c aparece en el string s.
+bool perteneceIterativo(char c, string s){
+//Propósito: indica si un char c aparece en el string s.
+    bool rta = false;
+    for(int i = 0; s[i] != '\0'  /* && !rta  */ ; i++){
+        rta = rta || (s[i] == c);
+    }
+
+    return rta;
+}
 
 
-int apariciones(char c, string s)
+
+
+
+bool perteneceRec(char c, string s, int i){
+    //Proposito: indica si un char c aparece en el string s, a partir del char i del string dado.
+    // Precondicion: el string tiene al menos i chars
+
+    if(s[i] !='\0'){
+        return s[i] == c || perteneceRec(c, s, i+1);
+    }
+    return s[i] == c ;  // compara el c con '\0'
+    
+}
+
+bool perteneceRecursivo(char c, string s){
+//Propósito: indica si un char c aparece en el string s.
+    return perteneceRec(c, s, 0);
+}
+
+
+
+
+
+int aparicionesIterativo(char c, string s){
 //Propósito: devuelve la cantidad de apariciones de un char c en el string s.
+    int rta = 0;
+    for(int i = 0; s[i]!= '\0' ; i++ ){
+        if(s[i] == c){ 
+            rta++;
+        }     
+    }
+
+    return rta;
+}
 
 
 
 
-*/
+int aparicionesRec(char c, string s, int i){
+    if(s[i] != '\0'){
+        if (s[i] == c){
+            return 1 + aparicionesRec(c,s, i+1);
+        }else{
+            return aparicionesRec(c,s, i+1);
+        }
+        //return (s[i] == c) ? (1 + aparicionesRec(c,s, i++) ): aparicionesRec(c,s, i++);
+    }
+
+    return 0;
+}
+
+int aparicionesRecursiva(char c, string s){
+//Propósito: devuelve la cantidad de apariciones de un char c en el string s.
+    return aparicionesRec(c, s, 0);
+}
 
 
 
@@ -191,26 +256,43 @@ int main(){
 
     cuentaRegresivaIterativa(4);
     cout << "." << endl;
-
+    
     cuentaRegresivaRecursiva(5);
     cout << "." << endl;
     desdeCeroHastaNIterativo(4);
     cout << "." << endl;
     
+    
     desdeCeroHastaNRecursivo(4);
     cout << "." << endl;
     
-    cout << multIterativo(4, 3) << endl;
+    cout << multIterativo(0, 2) << endl;
     
     cout<<""<< endl;
-    cout << multRecursiva(4, 3) << endl;
+    cout << multRecursiva(0, 2) << endl;
     
-    */
     primerosNIterativa(3, "hola");
     cout << "" << endl;
     cout << "" << endl;
     primerosNRecursiva(3, "hola");
+  
+    cout << perteneceIterativo('z', "hola") << endl;
     
+    cout << "" << endl;
+    
+    cout << perteneceRecursivo('z', "hola") << endl;
 
+    
+    cout << aparicionesIterativo('a', "holaaaa") << endl;
+    
+    cout << "" << endl;
+    
+    cout << aparicionesRecursiva('a', "holaaaa") << endl;
+    
+    */
+
+    cout << 10.55 / 2  << endl;
+
+    
     return 0;
 }
