@@ -16,36 +16,6 @@ Entrenador consEntrenador(string nombre, int cantidad, Pokemon* pokemon){
     return e;
 }
 
-// Devolver un Pokemon de tipo Fuego
-Pokemon agarrarPokeDeFuego(Entrenador e ; TipoDePokemon t){
-    // Precondicion: el entrenador tiene un pokemon del tipo dado!
-    int i = 
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 string nombreDeEntrenador(Entrenador e){
 //Devuelve el nombre del entrenador.
