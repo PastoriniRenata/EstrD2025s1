@@ -1,6 +1,25 @@
 #include <iostream> // Necesario para mostrar por consola con cout
 using namespace std;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Hacer iteracion y recursion de c/u
 
 

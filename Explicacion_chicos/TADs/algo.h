@@ -2,12 +2,13 @@
 using namespace std; // BÁSICOS en todos los archivos
 
 
-struct RepresentacionPar {
+struct RepresentacionPar { 
     int x;
     int y;
 };
+
 // --> Equivalente al 'type' de Haskell
-typedef struct RepresentacionPar Par; // Alias: Par representa la implementación oculta
+typedef RepresentacionPar Par; // Alias: Par representa la implementación oculta
 
 
 Par consPar(int x, int y); // Propósito: construye un par

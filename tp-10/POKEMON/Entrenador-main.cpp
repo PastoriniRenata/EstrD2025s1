@@ -2,7 +2,7 @@
 using namespace std;
 #include "Entrenador.h"
 // DA ERROR: g++ -o prueba Entrenador-main.cpp Entrenador.cpp          --> xq le falta info de pokemon
-//PARA PROBAR: g++ -o prueba Entrenador-main.cpp Entrenador.cpp Pokemon.cpp
+// PARA PROBAR: g++ -o prueba Entrenador-main.cpp Entrenador.cpp Pokemon.cpp
 
 
 
