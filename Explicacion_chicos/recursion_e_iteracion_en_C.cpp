@@ -121,14 +121,6 @@ int aparicionesRecursivo(char c, string s){
 }
 
 
-
-
-
-
-
-
-
-
 int main(){
 
     cout << aparicionesRecursivo('h', "hola") << "  (1)  "<< endl;
