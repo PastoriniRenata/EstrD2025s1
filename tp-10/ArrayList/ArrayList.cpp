@@ -9,11 +9,10 @@ ArrayList newArrayList(){
 //Crea una lista con 0 elementos.
 //Nota: empezar el array list con capacidad 16.
     ArrayList arrayL = new ArrayListSt;
-    int xs[16];
 
     arrayL -> cantidad = 0;
     arrayL -> capacidad = 16;
-    arrayL -> elementos = xs;
+    arrayL -> elementos = new int[16];
 
     return arrayL;
 }
@@ -23,11 +22,10 @@ ArrayList newArrayList(){
 ArrayList newArrayListWith(int capacidad){
 //Crea una lista con 0 elementos y una capacidad dada por parámetro.
     ArrayList arrayL = new ArrayListSt;
-    int xs[capacidad];
 
     arrayL -> cantidad = 0;
+    arrayL -> elementos = new int[capacidad];
     arrayL -> capacidad = capacidad;
-    arrayL -> elementos = xs;
 
     return arrayL;
 }
@@ -41,33 +39,33 @@ int lengthAL(ArrayList xs){
 
 int get(int i, ArrayList xs){
 //Devuelve el iésimo elemento de la lista.
-    return xs->elementos[i];
+    return (xs->elementos)[i];
 }
 
 void set(int i, int x, ArrayList xs){
 //Reemplaza el iésimo elemento por otro dado.
-    xs->elementos[i] = x;
+    (xs->elementos)[i] = x;
 
 }
 
 void resize(int capac, ArrayList xs){
 //Decrementa o aumenta la capacidad del array.
 //Nota: en caso de decrementarla, se pierden los elementos del final de la lista.
-    int ys[capac];
+    int* ys = new int[capac];
+    //array de int que lo llamo ys = guardo lugar en memoria con el new ??? 
 
     for(int i=0; (i<capac) && ( i < xs->capacidad) ; i++){
-        ys[i] = xs->elementos[i];
+        ys[i] = (xs->elementos)[i];
     }
 
     xs->elementos = ys;
-
 }
 
 void add(int x, ArrayList xs){
 //Agrega un elemento al final de la lista.
 
     if (xs-> capacidad != xs->cantidad){
-        xs -> elementos [xs->cantidad] = x; // en la primera posicion sin ocupar pongo el elemento x
+        xs -> elementos[xs->cantidad] = x; // en la primera posicion sin ocupar pongo el elemento x
         xs -> cantidad += 1;
     }
 

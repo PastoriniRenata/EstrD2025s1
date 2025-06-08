@@ -4,13 +4,15 @@ using namespace std;
 
 // AUX. para mostrar la lista
 void PrintList(ArrayList xs) {
+    cout << "[" ;
     for (int i = 0; i < lengthAL(xs); i++) {
-        cout << get(i, xs) << " ";
+        cout << get(i, xs) << ", ";
     }
-    cout << endl;
+    cout << "]" << endl;
 }
 
 int main() {
+    
     ArrayList list = newArrayList();
     cout << "lista nueva: capacidad (16) -> " << list->capacidad << " cantidad (0) -> " << list->cantidad << endl;
 
