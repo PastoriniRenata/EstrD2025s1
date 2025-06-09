@@ -28,7 +28,7 @@ void sucesores(ArrayList xs){
 
 bool pertenece(int x, ArrayList xs){
 //Indica si el elemento pertenece a la lista.
-    bool perten = false; // es mala practica usar un acumulador???
+    bool perten = false; 
     for(int i = 0; i<lengthAL(xs) ; i++){
         perten = perten || get(i, xs) == x ;
     }
