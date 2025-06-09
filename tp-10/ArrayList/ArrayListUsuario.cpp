@@ -48,7 +48,7 @@ int apariciones(int x, ArrayList xs){
 
 //------------------------------------------------------------------------------------------------------------------------------
 
-void agregarTodosLosDelprimeArrayAlsegundo(ArrayList xs, ArrayList arrayL){
+void agregarTodosLosDelprimerArrayAlsegundo(ArrayList xs, ArrayList arrayL){
 //Precondicion: arrayL tiene suficiente espacio para todos los elementos de xs
 
     for(int i = 0; i< lengthAL(xs); i++){
@@ -62,8 +62,8 @@ ArrayList append(ArrayList xs, ArrayList ys){
 //Crea una nueva lista a partir de la primera y la segunda (en ese orden).
     ArrayList arrayL = newArrayListWith( lengthAL(xs) + lengthAL(ys) );
 
-    agregarTodosLosDelprimeArrayAlsegundo(xs, arrayL);
-    agregarTodosLosDelprimeArrayAlsegundo(ys, arrayL);
+    agregarTodosLosDelprimerArrayAlsegundo(xs, arrayL);
+    agregarTodosLosDelprimerArrayAlsegundo(ys, arrayL);
 
     return arrayL;
 

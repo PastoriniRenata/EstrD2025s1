@@ -177,6 +177,9 @@ void primerosNRecursiva(int n, string s){
 
 }
 
+
+
+
 bool perteneceIterativo(char c, string s){
 //Propósito: indica si un char c aparece en el string s.
     bool rta = false;
@@ -199,7 +202,6 @@ bool perteneceRec(char c, string s, int i){
         return s[i] == c || perteneceRec(c, s, i+1);
     }
     return s[i] == c ;  // compara el c con '\0'
-    
 }
 
 bool perteneceRecursivo(char c, string s){
