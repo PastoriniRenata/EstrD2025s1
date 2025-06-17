@@ -48,7 +48,7 @@ bool esDivisorDe(int i, int x){
 int maxComunDiv(int x, int y){
     //Proposito: devuelve el maximo comun divisor entre x e y.
     int div = 1;
-    for(int i = 1; i<=x && i<=y  ; i++){
+    for(int i = x; i<=x && i<=y  ; i--){
         if (esDivisorDe(i, x) && esDivisorDe(i, y)){
             div = i;
         }
