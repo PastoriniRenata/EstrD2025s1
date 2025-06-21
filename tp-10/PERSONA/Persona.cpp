@@ -8,7 +8,7 @@ using namespace std;
 Persona consPersona(string nombre, int edad){
 //Devuelve a una persona nueva, con el nombre y la edad dados
    // Persona p = new Persona; ---> DA ERROR cannot initialize a variable of type 'Persona' (aka 'PersonaSt *') with an rvalue of type 'Persona *' (aka 'PersonaSt **')
-    Persona p = new PersonaSt;
+    PersonaSt* p = new PersonaSt;
 
     p -> nomb = nombre;
     p -> ed = edad;
