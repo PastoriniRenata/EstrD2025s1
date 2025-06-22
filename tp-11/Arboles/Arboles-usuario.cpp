@@ -78,7 +78,6 @@ void agregarTodosLosDelprimerArrayAlsegundo(ArrayList xs, ArrayList arrayL){
     
 }
 
-
 ArrayList append(ArrayList xs, ArrayList ys){
 //Crea una nueva lista a partir de la primera y la segunda (en ese orden).
     ArrayList arrayL = newArrayListWith( lengthAL(xs) + lengthAL(ys) );
@@ -91,56 +90,86 @@ ArrayList append(ArrayList xs, ArrayList ys){
 }
 
 
-ArrayList aLista( ArrayList acumulador, Tree t){
-    if(isEmptyT(t)){
-        return acumulador; 
-    }else{
-        add(rootT(t), append(aLista(acumulador, left(t)) , aLista(acumulador, right(t))));
-
-        return acumulador;
+void aLista( ArrayList acumulador, Tree t){
+    if(!isEmptyT(t)){
+        add(rootT(t), acumulador);
+        aLista(acumulador, left(t));
+        aLista(acumulador, right(t));
     }
 }
 
 ArrayList toList(Tree t){
 //Dado un árb ol devuelve una lista con to dos sus elementos.
-    return aLista(newArrayList(), t);
-}
-/*
-//------------------------------------------------------------------------------------------------------------------------------------
-
-ArrayList leaves(Tree t){
-//Dado un árbol devuelve los elementos que se encuentran en sus hojas.
-    if(isEmptyT(left(t)) && isEmptyT(right(t))){
-        ArrayList xs = newArrayList();
-        add(rootT(t), xs);
-        return xs;
-    }else{
-
-        return append(toList(left(t)) , toList(right(t)));
-    }
+    ArrayList acumulador = newArrayList();
+    aLista(acumulador, t);
+    return acumulador;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------
 
-
-ArrayList levelN(int n, Tree t){
-//Dados un número n y un árb ol devuelve una lista con los nodos de nivel n.
-    if(isEmptyT(t)){
-        return newArrayList();
-    }else{
-        if(n==0){
-            ArrayList xs = newArrayList();
-            add(rootT(t), xs);
-            return xs;
+void hojas(ArrayList acumulador, Tree t){
+    if(!isEmptyT(t)){
+        if(isEmptyT(left(t)) && isEmptyT(right(t))){
+            add(rootT(t), acumulador);
         }else{
-            return append(levelN(n-1, left(t)), levelN(n-1, right(t)));
+            hojas(acumulador, left(t)); 
+            hojas(acumulador, right(t));
         }
     }
 }
 
 
 
+ArrayList leaves(Tree t){
+//Dado un árbol devuelve los elementos que se encuentran en sus hojas.
+    ArrayList acumulador = newArrayList();
+    
+    hojas(acumulador, t);
 
+    return acumulador;
+
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------
+
+void nivelN (ArrayList acumulador, int n, Tree t){
+
+    if(!isEmptyT(t) && n>=0){
+        if(n==0){
+            add(rootT(t), acumulador);
+        }else{
+            nivelN(acumulador, n-1, left(t));
+            nivelN(acumulador, n-1, right(t));
+        }
+    }
+}
+
+
+/*
+ArrayList nivelN (ArrayList acumulador, int n, Tree t){
+    if(isEmptyT(t)){
+        return acumulador;
+    }else{
+        if(n==0){            
+            add(rootT(t), acumulador);
+            return acumulador;
+        }else{
+            return append(nivelN(acumulador, n-1, left(t)), nivelN(acumulador, n-1, right(t)));
+        }
+    }
+}
+*/
+
+ArrayList levelN(int n, Tree t){
+//Dados un número n y un árb ol devuelve una lista con los nodos de nivel n.
+    ArrayList acumulador = newArrayList();
+    nivelN(acumulador, n, t);
+    return acumulador;
+}
+
+
+
+/*
 
 
 
@@ -203,7 +232,7 @@ int main() {
     // Probar toList
     cout << "toList(bigTree) [1,2,3,4,5,6,10]: ";
     printArrayList(toList(bigTree));
-    /*
+    
     // Probar leaves
     cout << "leaves(bigTree) ([1,2,3,4]): ";
     printArrayList(leaves(bigTree));
@@ -211,12 +240,11 @@ int main() {
     // Probar levelN
     cout << "levelN(0, bigTree) [10]: ";
     printArrayList(levelN(0, bigTree));
-    cout << "levelN(1, bigTree): [5,6]";
+    cout << "levelN(1, bigTree) [5,6] :";
     printArrayList(levelN(1, bigTree));
     cout << "levelN(2, bigTree) [1,2,3,4]: ";
     printArrayList(levelN(2, bigTree));
     
-    */
     return 0;
 }
 
