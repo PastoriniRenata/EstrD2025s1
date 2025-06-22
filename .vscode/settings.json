@@ -3,6 +3,14 @@
     "files.associations": {
         "iostream": "cpp",
         "ostream": "cpp",
-        "__config": "cpp"
+        "__config": "cpp",
+        "array": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "variant": "cpp",
+        "complex": "cpp",
+        "memory": "cpp",
+        "new": "cpp",
+        "string": "cpp"
     }
 }

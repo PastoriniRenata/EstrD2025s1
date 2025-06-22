@@ -13,6 +13,8 @@ Queue emptyQ(){
     q-> cantidad = 0;
     q-> primero = NULL;
     q-> ultimo = NULL;
+
+    return q;
 }
 
 bool isEmptyQ(Queue q){
@@ -24,7 +26,7 @@ bool isEmptyQ(Queue q){
 int firstQ(Queue q){
 //Devuelve el primer elemento.
 //Costo: O(1).
-    return q->primero;
+    return q->primero->elem;
 }
 
 void Enqueue(int x, Queue q){
@@ -32,13 +34,20 @@ void Enqueue(int x, Queue q){
 //Costo: O(1).
     NodoQ* nq = new NodoQ;
 
-    nq->elem;
+    nq->elem=x;
     nq->siguiente = NULL;
 
-    NodoQ* temp = q->ultimo;
+    if(q->cantidad==0){
+        q->primero = nq;
+        q->ultimo = nq;
+    }else{
+        q->ultimo->siguiente = nq;
+        q->ultimo = nq;
+    }
 
-    temp->siguiente = nq;
-    q->ultimo = nq;
+    
+
+    q->cantidad++;
 
 }
 
@@ -47,7 +56,9 @@ void Dequeue(Queue q){
 //Costo: O(1).
     if(q->cantidad > 1){
         NodoQ* temp = q->primero;
-        q->
+        q->primero = temp->siguiente;
+        q->cantidad --;
+
 
     }else{
         q->primero = NULL;
@@ -55,17 +66,57 @@ void Dequeue(Queue q){
     }
 }
 
-int lengthQ(Queue q){}
+int lengthQ(Queue q){
 //Devuelve la cantidad de elementos de la cola.
 //Costo: O(1).
+    return q->cantidad;
+}
 
-
-void MergeQ(Queue q1, Queue q2){}
+void MergeQ(Queue q1, Queue q2){
 //Anexa q2 al final de q1, liberando la memoria inservible de q2 en el proceso.
 //Nota: Si bien se libera memoria de q2, no necesariamente la de sus nodos.
+    if(q1->cantidad>0 && q2->cantidad>0){
+        q1->ultimo->siguiente = q2->primero;
+        q1->ultimo = q2->ultimo; 
 
+    }else{
+        if(q1->cantidad==0){
+            q1->primero = q2->primero;
+            q1->ultimo = q2->ultimo;
+
+        }
+    }
+
+    q1->cantidad += q2->cantidad; 
+
+    delete(q2);
+
+
+}
 
 //Costo: O(1).
-void DestroyQ(Queue q){}
+
+
+
+
+void DestroyQ(Queue q){
 //Libera la memoria ocupada por la cola.
 //Costo: O(n).
+    if(q->cantidad>0){
+        NodoQ* curr = q->primero;
+        NodoQ* siguiente = curr->siguiente;
+
+        while(siguiente != NULL){
+            delete(curr);
+            curr = siguiente;
+            siguiente = curr->siguiente;
+        }
+
+        delete(curr);
+        delete(siguiente);
+
+    }
+
+    delete(q);
+    
+}
