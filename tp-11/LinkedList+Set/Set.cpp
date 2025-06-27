@@ -21,16 +21,16 @@ bool isEmptyS(Set s){
 
 bool pertenece (int x, NodoS* ns){
     // indica si el elemento es el nodo actual o algun ode los nodos sujetos a él?
-    bool existe = false;
+    //bool existe = false;
     NodoS* temp = ns;
 
-    while( temp != NULL && !existe){
-        existe = temp->elem == x;
+    while( temp != NULL && temp->elem != x){
+        //existe = temp->elem == x;
         temp = temp->siguiente;
     }
-//    delete temp; --> NO HACE FALTA BORRARLA XQ E SUNA VARIABLE LOCAL DE LTIPO PUNTERO QUE VA A FUNCIONAR SOLO DENTRO DE LA FUNCION
+//    delete temp; --> NO HACE FALTA BORRARLA XQ ES UNA VARIABLE LOCAL DEL TIPO PUNTERO QUE VA A FUNCIONAR SOLO DENTRO DE LA FUNCION
 
-    return existe;
+    return temp != NULL ; //existe
 }
 
 bool belongsS(int x, Set s){
@@ -66,6 +66,7 @@ void RemoveS(int x, Set s){
     }
 
 /* ES VALIDO, PÉRO ES MALA PRACTICA HACERLO ASÍ: 
+
     while(curr != NULL){
         if(curr->siguiente != NULL && curr->siguiente->elem == x){
             NodoS* temp = curr->siguiente;

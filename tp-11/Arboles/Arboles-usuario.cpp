@@ -1,7 +1,8 @@
 #include <iostream>
 using namespace std;
-#include "Arboles.h"
 #include "ArrayList.h"
+#include "Arboles.h"
+
 
 int sumarT(Tree t){
 //Dado un árbol binario de enteros devuelve la suma entre sus elementos.
@@ -145,20 +146,19 @@ void nivelN (ArrayList acumulador, int n, Tree t){
 }
 
 
-/*
-ArrayList nivelN (ArrayList acumulador, int n, Tree t){
-    if(isEmptyT(t)){
-        return acumulador;
-    }else{
-        if(n==0){            
-            add(rootT(t), acumulador);
-            return acumulador;
-        }else{
-            return append(nivelN(acumulador, n-1, left(t)), nivelN(acumulador, n-1, right(t)));
-        }
-    }
-}
-*/
+
+//ArrayList nivelN (ArrayList acumulador, int n, Tree t){
+//    if(isEmptyT(t)){
+//        return acumulador;
+//    }else{
+//        if(n==0){            
+//            add(rootT(t), acumulador);
+//            return acumulador;
+//        }else{
+//            return append(nivelN(acumulador, n-1, left(t)), nivelN(acumulador, n-1, right(t)));
+//        }
+//    }
+//}
 
 ArrayList levelN(int n, Tree t){
 //Dados un número n y un árb ol devuelve una lista con los nodos de nivel n.
@@ -168,14 +168,7 @@ ArrayList levelN(int n, Tree t){
 }
 
 
-
-/*
-
-
-
-
-*/
-
+//-------------------MAIN-----------------------
 
 // Función auxiliar para imprimir un ArrayList
 void printArrayList(ArrayList xs) {

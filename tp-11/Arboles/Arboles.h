@@ -9,7 +9,6 @@ struct NodeT {
 
 typedef NodeT* Tree;
 
-
 Tree emptyT();
 
 Tree nodeT(int elem, Tree left, Tree right);
