@@ -55,8 +55,6 @@ COSTO:
 */
 
 
-
-
 ArrayList nombresIngresados(Investigacion investigacion){
 //Propósito: devuelve los nombres de personas ingresadas.
 //Nota: suponer que el ArrayList es de nombres. --> ArrayList de string?
@@ -65,15 +63,28 @@ ArrayList nombresIngresados(Investigacion investigacion){
     ArrayList nombres = emptyAL();
 
     for(int i = 0; isValidIndex(i, investigacion->sospechosos); i++){
-        Persona p = get( i, investigacion->sospechosos);
-        add( p -> nombre , nombres);
+       // PersonaSt* p = get( i, investigacion->sospechosos); // si fuera usiario de Persona, en lugar de PersonaSt* iria Persona
+        add( get( i, investigacion->sospechosos) -> nombre , nombres);
     }
 
     return nombres;
 }
 
 /*
-COSTO:
+
+MEMORIA: usuario de ArrayList e implementador de Investigación
+En el frame de la función se crea un espacio para la variable nombres que es un ArrayList que se va a ir modificando
+de manera dinámica agregando nombres de personas. 
+Por cada funciones de la interfaz de ArrayList usadas (isValidIndex, add, get, emptyAL), cada vez que se las invoca, 
+se crea un frame en el stack frame.
+
+
+
+
+
+
+
+COSTO operacional:
     - N la cantidad de personas en la investigación
     - emptyAL() --> O(1)
     - isValidIndex --> O(1)
@@ -81,7 +92,8 @@ COSTO:
     - add --> O(1)
     - acceder a los campos de las estructuras tiene costo O(1)
 
-    --> Por cada iteración se hacen operaciones secuenciales de costo constante, donde se hacen un total de N iteraciones --> nombresIngresados tiene costo O(N)
+    --> Por cada iteración se hacen operaciones secuenciales de costo constante, donde se hacen un total de N iteraciones 
+        --> nombresIngresados tiene costo O(N)
 
 */
 
