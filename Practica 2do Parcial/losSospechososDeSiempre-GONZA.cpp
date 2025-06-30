@@ -1,155 +1,156 @@
-struct PersonaSt {
-    string nombre;
-    int evidencia;
-}
-
-typedef PersonaSt* Persona;
-
-struct InvestigacionSt {
-    ArrayList sospechosos; // lista de Persona
-}
-typedef InvestigacionSt* Investigacion;
-
-/*
-Ejercicios
-Invariantes
-a) Dar invariantes de representación válidos según la descripción de la estructura.
-    Puntaje: 1
-
-    --> PersonaSt
-        - El puntero PersonaSt no apunta a NULL.
-        - el nombre no apunta a NULL
-        - la cantidad de evidencias debe ser mayor o igual a cero.
+#include <iostream>
+using namespace std;
 
 
+//Invariantes de representacion
+// PersonaSt 
+//1)el int de las evidencias no puede ser un numero < a 0
+//2)El puntero persanast no es null 
 
-    --> InvestigacionSt
-        - El puntero InvestigacionSt no apunta a NULL
-        - Todos los elementos en la lista son punteros validos a estructuras PersonaSt. 
-        - No existe dos personas en la lista de sospechosos con el mismo nombre
+// InvestigacionSt 
+//1)El puntero investigacionst no es null 
+//2)todos los punteros persomast en la lista de sospechosos  no son null
+//3)en la lista de sospechosos no hay 2 sospechosos con el mismo nombre
 
-
-    Implementación
-    Implementar la siguiente interfaz de Investigacion, utilizando la representación y los costos dados y calculando los costos
-    de cada subtarea definida:
-*/
-
-
-Investigacion comenzarInvestigacion(){
 //Propósito: crea una investigación sin personas.
 //Eficiencia: O(1)
-//Puntaje: 0.25
-    InvestigacionSt* inv = new InvestigacionSt;
+Investigacion comenzarInvestigacion(){
+    InvestigacionSt* i = new InvestigacionSt;
+    i->sospechosos = emptyAL();
 
-    inv ->sospechosos = emptyAL();
-
-    return inv;
+    return i;
 }
-/*
-COSTO:
-    - crear un puntero --> O(1) ???
-    - emptyAL() --> O(1)
+//O(1)el costo de hacer new es O(1) asignar la lista vacia tambien tiene el mismo costo por lo
+//tanto el costo final es de O(1).
 
-    --> como son todas operaciones secuenciales de costo constante --> comenzarInvestigacion es de costo O(1)
-
-*/
-
-
-ArrayList nombresIngresados(Investigacion investigacion){
 //Propósito: devuelve los nombres de personas ingresadas.
-//Nota: suponer que el ArrayList es de nombres. --> ArrayList de string?
+//Nota: suponer que el ArrayList es de nombres.
 //Eficiencia: O(N)
-//Puntaje: 0.25
+ArrayList nombresIngresados(Investigacion investigacion){
     ArrayList nombres = emptyAL();
-
-    for(int i = 0; isValidIndex(i, investigacion->sospechosos); i++){
-       // PersonaSt* p = get( i, investigacion->sospechosos); // si fuera usiario de Persona, en lugar de PersonaSt* iria Persona
-        add( get( i, investigacion->sospechosos) -> nombre , nombres);
+    
+    for(int i = 0; isValidIndex(i, investigacion->sospechosos);i++){
+        add(get(i,investigacion->sospechosos)->nombre,nombres);
     }
 
     return nombres;
 }
 
-/*
-
-MEMORIA: usuario de ArrayList e implementador de Investigación
-En el frame de la función se crea un espacio para la variable nombres que es un ArrayList que se va a ir modificando
-de manera dinámica agregando nombres de personas. 
-Por cada funciones de la interfaz de ArrayList usadas (isValidIndex, add, get, emptyAL), cada vez que se las invoca, 
-se crea un frame en el stack frame.
-
-
-
-
-
-
-
-COSTO operacional:
-    - N la cantidad de personas en la investigación
-    - emptyAL() --> O(1)
-    - isValidIndex --> O(1)
-    - get --> O(1)
-    - add --> O(1)
-    - acceder a los campos de las estructuras tiene costo O(1)
-
-    --> Por cada iteración se hacen operaciones secuenciales de costo constante, donde se hacen un total de N iteraciones 
-        --> nombresIngresados tiene costo O(N)
-
-*/
-
-
-
-int cantEvidenciaDePersonas(Investigacion investigacion){
 //Propósito: devuelve la sumatoria de evidencia de las personas.
 //Eficiencia: O(N)
-//Puntaje: 0.75
-    int cantEvidencias = 0;
+int cantEvidenciaDePersonas(Investigacion investigacion){
+    int evidencia = 0;
 
-    for(int i = 0; isValidIndex(i, investigacion->sospechosos); i++){
-        Persona p = get( i, investigacion->sospechosos);
-        cantEvidencias = p -> evidencias;
+    for(int i = 0; isValidIndex(i, investigacion->sospechosos);i++){
+        evidencia += get(i,investigacion->sospechosos)->evidenica;
     }
 
-    return cantEvidencias;
+    return evidencia;
 }
-/*
-COSTO:
-    - N la cantidad de personas en la investigación
-    - isValidIndex --> O(1)
-    - get --> O(1)
-    - acceder a los campos de las estructuras tiene costo O(1)
 
-    --> Por cada iteración se hacen operaciones secuenciales de costo constante, donde se hacen un total de N iteraciones --> cantEvidenciaDePersonas tiene costo O(N)
-
-*/
-
-
-bool casoCerrado(Investigacion investigacion){
 //Propósito: indica si la investigación posee al menos una persona con al menos 5 evidencias en su contra.
 //Eficiencia: O(N)
-//Puntaje: 0.75
+bool casoCerrado(Investigacion investigacion){
+    bool tieneCinco = false;
 
-    int i = 0; 
-
-    while(isValidIndex(i, investigacion->sospechosos) && get( i, investigacion->sospechosos)->evidencias < 5){
-        i++;
+    for(int i = 0; isValidIndex(i, investigacion->sospechosos) && tieneCinco;i++){
+        tieneCinco = get(i,investigacion->sospechosos)->evidenica >= 5;
     }
-    
-    return isValidIndex(i, investigacion->sospechosos) && get( i, investigacion->sospechosos)->evidencias >= 5 ;
+
+    return tieneCinco;
+}
+
+//Propósito: indica si esa persona tiene al menos una evidencia en su contra.
+//Nota: la persona puede no existir.
+bool esSospechosa(string nombre, Investigacion investigacion){
+    int cant = 0;
+    bool esta = false;
+
+    for(int i = 0; isValidIndex(i, investigacion->sospechosos) && !esta;i++){
+        esta = (get(i,investigacion->sospechosos)->nombre == nombre);
+        if(esta){
+            cant = get(i,investigacion->sospechosos)->evidencia;
+        }
+    }
+
+    return cant >= 1;
+}
+
+//Propósito: devuelve a las personas con cero evidencia en su contra.
+//Nota: suponer que el ArrayList es de nombres.
+//Eficiencia: O(N)
+ArrayList posiblesInocentes(Investigacion investigacion){
+    ArrayList sinEvidencia = emptyAL();
+
+    for(int i = 0; isValidIndex(i, investigacion->sospechosos);i++){
+        if(get(i,investigacion->sospechosos)->evidencia == 0){
+            add(get(i,investigacion->sospechosos)->nombre,sinEvidencia);
+        }
+    }
+
+    return sinEvidencia;
+}
+
+//Propósito: ingresa a personas nuevas a la investigación (mediante sus nombres), sin evidencia en su contra.
+//Nota: suponer que el ArrayList es de nombres.
+//Precondición: las personas no existen en la investigación y no hay nombres repetidos.
+void ingresarPersonas(ArrayList nombres, Investigacion investigacion){
 
 }
-/*
-COSTO:
-    - N la cantidad de personas en la investigación
-    - isValidIndex --> O(1)
-    - get --> O(1)
-    - acceder a los campos de las estructuras tiene costo O(1)
-
-    --> Por cada iteración se hacen operaciones secuenciales de costo constante, donde, en peor caso, se hacen un total de N iteraciones --> casoCerrado tiene costo O(N)
-*/
 
 
+//usar la linkedlist como una estructurea axuliar 
+//se pueden agregar precondiciones
+int[] ascendente(int values[],int n){
 
+}
+
+//como implementador de linkedList
+int[] toArray(linkedList xs){
+
+}
+
+//implementador de linkedList
+void reverse(linkedlist xs){
+
+}
+
+//implementador de linkedList
+LinkedList from(int[] ns){
+
+}
+
+//implementador de linkedList
+LinkedList from(int[] ns,int n){
+
+}
+
+/usar la linkedlist como una estructurea axuliar 
+//se pueden agregar precondiciones
+int[] ascendente(int[] values,int n){
+  LinkedList res = nil();
+  int max;
+
+  if (n != 0) {
+    Snoc(values[0], res);
+    max = values[0];
+  }
+
+  for (int i = 1; i<n ; i++){
+    if(max<values[i]){ 
+      Snoc(values[i], res);
+      max = values[i];
+    }
+    
+  }
+  int[] resultado = toArray(res);
+
+  DestroyL(res);
+  
+  return resultado;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Propósito: devuelve los nombres de personas ingresadas.
 //Nota: suponer que el ArrayList es de nombres.
@@ -314,40 +315,25 @@ agregarUnoA
     - N es la cantidad de personas en la investigación
     - get -> O(1)
 
-    En cada iteración se ejecutan funciones de costo constante las cuales son independientes y secuenciales. En peor caso se recorren todas las
-    personas de la investigacióm, obteniendo así un costo lineal
-
-    => agregarUnoA tiene costo O(1)
-
-
-ingresarUnaEvidencia
-    - M es la cantidad de nombres en el ArrayList ingresado por argumento.
-    - N es la cantidad de personas en la investigación
-    - isValidIndex -> O(1)
-    - agregarUnoA -> O(N)
-
-    Por cada iteración al recorrer el ArrayList de nombres ingresado por argumento se hace una operación de costo constante (isValidIndex) 
-    y una operación de costo linel (agregarUnoA). Como el costo constante se desestima, ingresarUnaEvidencia tiene costo final O(N*M), donde
-    M, en peor caso, podría ser igual a N.
 
 
 
-Costo en Memoria:
-    agregarUnoA
-        cuando arranca mi funcion se crea un stack frame donde se guarda la variable iniciada y declarada en la memoria estatica. Por cada 
-        invocacion de la funcion de la interfaz de arrayList (get), se crea un nuevo stack frame temporal con sus respectivos parametros 
-        y variables locales. Este frame se elimina automaticamente al finalizar la ejecucion de la funcion. 
 
-        Por otro lado, en la memoria dinamica hay cambios al acceder al puntero de la persona a la que quiero incrementar en uno sus evidencias.
+
+
 
     
-    ingresarUnaEvidencia
-        cuando arranca mi funcion se crea un stack frame en memoria estática. 
-        Por cada invocacion de la funcion de la interfaz de arrayList (isValidIndex, get) y la funcion auxiliar agregarUnoA, se crea un 
-        nuevo stack frame temporal con sus respectivos parametros y variables locales. Estos frames se eliminan automaticamente al 
-        finalizar la ejecucion cada una de las funciones.  
+    
+    
+    
+    
+    - M es la cantidad e nombres en el ArrayList ingresado por argumento.
 
-        Memoria Dinamica: no hay cambios.
+
+
+
+
+
 
 
 
