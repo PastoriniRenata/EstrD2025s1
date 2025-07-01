@@ -79,11 +79,6 @@ Por cada funciones de la interfaz de ArrayList usadas (isValidIndex, add, get, e
 se crea un frame en el stack frame.
 
 
-
-
-
-
-
 COSTO operacional:
     - N la cantidad de personas en la investigación
     - emptyAL() --> O(1)
@@ -104,12 +99,10 @@ int cantEvidenciaDePersonas(Investigacion investigacion){
 //Eficiencia: O(N)
 //Puntaje: 0.75
     int cantEvidencias = 0;
-
     for(int i = 0; isValidIndex(i, investigacion->sospechosos); i++){
         Persona p = get( i, investigacion->sospechosos);
         cantEvidencias = p -> evidencias;
     }
-
     return cantEvidencias;
 }
 /*
@@ -128,15 +121,11 @@ bool casoCerrado(Investigacion investigacion){
 //Propósito: indica si la investigación posee al menos una persona con al menos 5 evidencias en su contra.
 //Eficiencia: O(N)
 //Puntaje: 0.75
-
     int i = 0; 
-
     while(isValidIndex(i, investigacion->sospechosos) && get( i, investigacion->sospechosos)->evidencias < 5){
         i++;
     }
-    
     return isValidIndex(i, investigacion->sospechosos) && get( i, investigacion->sospechosos)->evidencias >= 5 ;
-
 }
 /*
 COSTO:
@@ -257,9 +246,6 @@ Al invocar la función add(...) se guarda el elemento dado en una celda de memor
 Al finalizar la ejecución de posiblesInocentes(...) el stack frame se elimina y el Array de salida per no se libera en esta funcón ya que se retorna.
 
 
-
-
-
 //Propósito: ingresa a personas nuevas a la investigación (mediante sus nombres), sin evidencia en su contra.
 //Nota: suponer que el ArrayList es de nombres.
 //Precondición: las pers
@@ -351,6 +337,45 @@ Costo en Memoria:
 
 
 
+
+
+int cantidadDeInocentes(Investigacion investigacion){
+//Propósito: Indica la cantidad de inocentes.
+    ArrayList pInocentes = posiblesInocentes(investigacion);
+    int i = 0;
+    while(isValidIndex(i, pInocentes)){
+        i++;
+    }
+//no tengo manera como usuario de eliminar la lista q creé, pero la borraría
+    return i;
+}
+
+COSTO:
+    - N es la cantidad de personas en la investigación
+    - posiblesInocentes -> O(N)
+    - isValidIndex -> O(1)
+
+    En cada iteración se hacen operaciones de costo constante. En conjunto con la ejecucion de posiblesInocentes al ser secuencial e 
+    independiente, el costo de cantidadDeInocentes es O(N + N), ya que posiblesInocentes podría devolver un ArrayList con todas
+    las personas de la investigacion.
+
+    => cantidadDeInocentes tiene costo => O(2*N) => O(N) ya que el valor constante se desestima.
+
+
+COSTO MEMORIA:
+    cuando arranca mi funcion se crea un stack frame donde se guarda la variable iniciada y declarada en la memoria estatica. Por cada 
+    invocacion de la funcion de la interfaz de arrayList (isValidIndex), se crea un nuevo stack frame temporal con sus respectivos parametros 
+    y variables locales. Este frame se elimina automaticamente al finalizar la ejecucion de la funcion. 
+    A su vez para la ejecucion de posiblesInocentes se crea un nuevo stack frame, el cual se elimina al terminar la ejecución, 
+    
+    
+    Memoria dinamica: no puedo hablar de memroia dinamica de ArrayList, xq soy usuario de los TAD Investigación y Array, los cuales no 
+    se como están construido, por lo cual no se que su implementación está conformada por punteros.
+
+bool todasInocentes(Investigacion investigacion){
+//Propósito: Indica si las personas en la investigación son todas inocentes.
+    return cantEvidenciaDePersonas(investigacion) == 0;
+}
 
 
 
