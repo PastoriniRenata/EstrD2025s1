@@ -40,6 +40,7 @@ void insert(Ronda r, int value){
     r->current = n;
 }
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Devuelve la cantidad de elementos en la ronda.
 int lenght(Ronda r){
@@ -57,6 +58,7 @@ int lenght(Ronda r){
     return cant;
 }
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Devuelve el valor del nodo actual.
 int current(Ronda r){
@@ -65,7 +67,7 @@ int current(Ronda r){
     return r->current->value;
 }
 
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Mover el current n posiciones en la ronda
 void move(Ronda r, int n){
@@ -82,6 +84,7 @@ void move(Ronda r, int n){
     }
 }
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 EXTRAS COMO IMPLEMENTADOR:
@@ -96,6 +99,7 @@ bool contains(Ronda r, int value){
     }
     return actual != NULL && actual->value == value;
 }
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 // Combinar dos rondas en una
@@ -112,7 +116,10 @@ void merge(Ronda r1, Ronda r2){
     r2->curr = NULL;
 }
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // Eliminar todos los nodos con valor par
+REVISAR!!!
 void removeEvens(Ronda r){
     RondaNode* actual = r->current;
     if(actual != NULL && actual == actual->next){ // una ronda con un solo elemento
@@ -146,22 +153,63 @@ void removeEvens(Ronda r){
     }
 }
 
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Crear una copia de la ronda que devuelva un nuevo Ronda igual a r.
-Ronda copy(Ronda r){
-    
+Ronda copy(Ronda r){ // ES MEZCLA ENTRE IMPLEMENTADOR Y USUARIO??
+    RondaSt* copia = new RondaSt;
+    if(r->current != NULL){
+        RondaNode* actual = r->current->next;
+        insert2(copia, r->current->value);
+        while(r->current != actual){
+            insert2(copia, actual->value);
+            actual = actual->next;
+        }
+    }else{
+        copia->current = NULL;
+    }
+    return copia;
+
 }
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 COMO USUARIO: (SIN USAR LOS EXTRAS)
+
 // Propósito: crea una ronda con los elementos de un array.
 // Precondición: xs tiene al menos n elementos.
-Ronda fromArray(int xs[], int n);
+Ronda fromArray(int xs[], int n){
+    Ronda nuevaR = mkRonda();
+    for(int i=0; i<n ; i++){
+        insert(nuevaR, xs[i]);
+    }
+    return nuevaR;
+}
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // Propósito: copia los elementos de la ronda en un array.
 // Precondición: xs tiene espacio suficiente para size(r) elementos.
-void toArray(Ronda r, int xs[]);
+void toArray(Ronda r, int xs[]){
+    int n = length(r);
+    for(int i = 0; i<n ; i++){
+        xs[i] = current(r);
+        move(r, 1);
+    }
+}
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // Propósito: devuelve la suma de todos los valores de la ronda.
 // Precondición: si la ronda está vacía, devuelve 0.
-int sumRonda(Ronda r);
+int sumRonda(Ronda r){
+    if(current(r) == NULL){ return 0;} // xq haces esto???
+
+    int totalElems = length(r);
+    int suma = 0;
+    for(int = 0; i < totalElems ; i++){
+        suma += current(r);
+        move(r, 1);
+    }
+    return suma
+}
